@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:vendeeimpressyon/components/button.dart';
 import 'package:vendeeimpressyon/components/textfield.dart';
 import 'package:vendeeimpressyon/pages/login_page.dart';
+import 'package:http/http.dart' as http;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class RegisterPage extends StatelessWidget {
   RegisterPage({super.key});
@@ -9,9 +11,54 @@ class RegisterPage extends StatelessWidget {
   // text editing controllers
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
+  final passwordConfirmController = TextEditingController();
+
+  final apiUrl = dotenv.env['API_URL_REGISTER']!;
+
+  void showErrorMessage(BuildContext context, String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Erreur"),
+          content: Text(message),
+          actions: <Widget>[
+            TextButton(
+              child: Text("OK"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   // sign user in method
-  void registerUserIn() {}
+  void registerUserIn(BuildContext context) async {
+    final String username = usernameController.text;
+    final String password = passwordController.text;
+    final String passwordconfirm = passwordConfirmController.text;
+
+    final response = await http.post(
+      Uri.parse(apiUrl),
+      body: {
+        'username': username,
+        'password': password,
+        'confirm_password': passwordconfirm,
+      },
+    );
+
+    if (response.statusCode == 200) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => LoginPage()),
+      );
+    } else {
+      showErrorMessage(context, "Une erreur s'est produite");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +100,7 @@ class RegisterPage extends StatelessWidget {
 
               // password textfield
               MyTextField(
-                controller: passwordController,
+                controller: passwordConfirmController,
                 hintText: 'Confirmer votre mot de passe',
                 obscureText: true,
               ),
@@ -62,7 +109,9 @@ class RegisterPage extends StatelessWidget {
 
               // sign in button
               MyButtonRegister(
-                onTap: registerUserIn,
+                onTap: () {
+                  registerUserIn(context);
+                },
               ),
 
               const SizedBox(height: 50),
@@ -106,8 +155,10 @@ class RegisterPage extends StatelessWidget {
                   const SizedBox(width: 4),
                   GestureDetector(
                     onTap: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => LoginPage()));
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => LoginPage()),
+                      );
                     },
                     child: Text(
                       'Se connecter',

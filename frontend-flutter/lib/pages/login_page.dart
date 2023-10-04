@@ -4,34 +4,57 @@ import 'package:vendeeimpressyon/components/textfield.dart';
 import 'package:vendeeimpressyon/pages/register_page.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:vendeeimpressyon/pages/home_page.dart';
 
 class LoginPage extends StatelessWidget {
   LoginPage({super.key});
 
   // text editing controllers
-  final usernameController = TextEditingController();
+  final mailController = TextEditingController();
   final passwordController = TextEditingController();
 
-  final apiUrl = dotenv.env['API_URL']!;
+  final apiUrl = dotenv.env['API_URL_LOGIN']!;
+
+  void showErrorMessage(BuildContext context, String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Erreur"),
+          content: Text(message),
+          actions: <Widget>[
+            TextButton(
+              child: Text("OK"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   // sign user in method
-  void signUserIn() async {
-    final String username = usernameController.text;
+  void signUserIn(BuildContext context) async {
+    final String mail = mailController.text;
     final String password = passwordController.text;
 
     final response = await http.post(
       Uri.parse(apiUrl),
       body: {
-        'username': username,
+        'username': mail,
         'password': password,
       },
     );
 
     if (response.statusCode == 200) {
-      print("Réponse : ${response.body}");
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => HomePage()),
+      );
     } else {
-      print("Échec de la connexion. Code HTTP : ${response.statusCode}");
-      print("Réponse : ${response.body}");
+      showErrorMessage(context, "Le mot de passe ou l'email est incorrect.");
     }
   }
 
@@ -57,7 +80,7 @@ class LoginPage extends StatelessWidget {
 
               // username textfield
               MyTextField(
-                controller: usernameController,
+                controller: mailController,
                 hintText: 'E-mail',
                 obscureText: false,
               ),
@@ -91,7 +114,9 @@ class LoginPage extends StatelessWidget {
 
               // sign in button
               MyButtonLogin(
-                onTap: signUserIn,
+                onTap: () {
+                  signUserIn(context);
+                },
               ),
 
               const SizedBox(height: 50),
@@ -135,10 +160,10 @@ class LoginPage extends StatelessWidget {
                   const SizedBox(width: 4),
                   GestureDetector(
                     onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => RegisterPage()));
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => RegisterPage()),
+                      );
                     },
                     child: Text(
                       'Créer un compte',
