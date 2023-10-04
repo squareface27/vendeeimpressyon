@@ -22,15 +22,16 @@ class RegisterPage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const SizedBox(height: 50),
+              const SizedBox(height: 0),
 
               // logo
-              // const Icon(
-              //   Icons.lock,
-              //   size: 100,
-              // ),
+              Image.asset(
+                'lib/assets/images/logo.png',
+                width: 300,
+                height: 300,
+              ),
 
-              const SizedBox(height: 25),
+              const SizedBox(height: 5),
 
               // email textfield
               MyTextField(

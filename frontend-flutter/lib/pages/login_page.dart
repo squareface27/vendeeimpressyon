@@ -44,13 +44,13 @@ class LoginPage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const SizedBox(height: 50),
+              const SizedBox(height: 0),
 
               // logo
               Image.asset(
-                'assets/images/logo.png',
-                width: 100,
-                height: 100,
+                'lib/assets/images/logo.png',
+                width: 300,
+                height: 300,
               ),
 
               const SizedBox(height: 25),
