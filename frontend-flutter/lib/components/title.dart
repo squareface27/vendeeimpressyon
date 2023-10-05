@@ -15,7 +15,7 @@ class MyTextTitle extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 25.0),
         child: Text(
           text,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 36,
             fontWeight: FontWeight.bold,
           ),

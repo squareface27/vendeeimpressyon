@@ -20,11 +20,11 @@ class LoginPage extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Erreur"),
+          title: const Text("Erreur"),
           content: Text(message),
           actions: <Widget>[
             TextButton(
-              child: Text("OK"),
+              child: const Text("OK"),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -169,7 +169,7 @@ class LoginPage extends StatelessWidget {
                               builder: (context) => RegisterPage()),
                         );
                       },
-                      child: Text(
+                      child: const Text(
                         'Créer un compte',
                         style: TextStyle(
                           color: Colors.blue,
