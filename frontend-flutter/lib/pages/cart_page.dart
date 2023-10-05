@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:vendeeimpressyon/colors.dart';
 
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+class Cart extends StatelessWidget {
+  const Cart({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +14,7 @@ class HomePage extends StatelessWidget {
           children: [
             Center(
               child: Text(
-                "Welcome : ",
+                "Panier : ",
                 style: TextStyle(
                   color: blue,
                   fontSize: 25.0,

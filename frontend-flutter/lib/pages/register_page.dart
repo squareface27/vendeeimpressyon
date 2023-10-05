@@ -3,6 +3,7 @@ import 'package:vendeeimpressyon/components/button.dart';
 import 'package:vendeeimpressyon/components/textfield.dart';
 import 'package:vendeeimpressyon/pages/login_page.dart';
 import 'package:http/http.dart' as http;
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class RegisterPage extends StatelessWidget {
@@ -37,26 +38,31 @@ class RegisterPage extends StatelessWidget {
 
   // sign user in method
   void registerUserIn(BuildContext context) async {
-    final String username = usernameController.text;
+    final String mail = usernameController.text;
     final String password = passwordController.text;
     final String passwordconfirm = passwordConfirmController.text;
+    final bool isValid = EmailValidator.validate(mail);
 
     final response = await http.post(
       Uri.parse(apiUrl),
       body: {
-        'username': username,
+        'username': mail,
         'password': password,
         'confirm_password': passwordconfirm,
       },
     );
 
-    if (response.statusCode == 200) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => LoginPage()),
-      );
+    if (isValid == true) {
+      if (response.statusCode == 200) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => LoginPage()),
+        );
+      } else {
+        showErrorMessage(context, "Une erreur s'est produite");
+      }
     } else {
-      showErrorMessage(context, "Une erreur s'est produite");
+      showErrorMessage(context, "Le format du mail est invalide");
     }
   }
 

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'dart:core';
 import 'package:vendeeimpressyon/components/button.dart';
 import 'package:vendeeimpressyon/components/textfield.dart';
 import 'package:vendeeimpressyon/pages/register_page.dart';
 import 'package:http/http.dart' as http;
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:vendeeimpressyon/pages/home_page.dart';
 
@@ -39,6 +41,7 @@ class LoginPage extends StatelessWidget {
   void signUserIn(BuildContext context) async {
     final String mail = mailController.text;
     final String password = passwordController.text;
+    final bool isValid = EmailValidator.validate(mail);
 
     final response = await http.post(
       Uri.parse(apiUrl),
@@ -48,13 +51,17 @@ class LoginPage extends StatelessWidget {
       },
     );
 
-    if (response.statusCode == 200) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => HomePage()),
-      );
+    if (isValid == true) {
+      if (response.statusCode == 200) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => HomePage()),
+        );
+      } else {
+        showErrorMessage(context, "Le mot de passe ou l'email est incorrect.");
+      }
     } else {
-      showErrorMessage(context, "Le mot de passe ou l'email est incorrect.");
+      showErrorMessage(context, "Le format de l'email est incorrect");
     }
   }
 
@@ -79,7 +86,7 @@ class LoginPage extends StatelessWidget {
 
                 const SizedBox(height: 0),
 
-                // username textfield
+                // mail textfield
                 MyTextField(
                   controller: mailController,
                   hintText: 'E-mail',

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:vendeeimpressyon/colors.dart';
 
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+class Profil extends StatelessWidget {
+  const Profil({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +14,7 @@ class HomePage extends StatelessWidget {
           children: [
             Center(
               child: Text(
-                "Welcome : ",
+                "Profil : ",
                 style: TextStyle(
                   color: blue,
                   fontSize: 25.0,
