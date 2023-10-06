@@ -74,11 +74,19 @@ class ApiController extends AbstractController
 
         $data = [];
         foreach ($etablissements as $etablissement) {
+            $nom = $etablissement->getNom();
+            $ville = $etablissement->getVille();
+
+            if ($ville === null) {
+            $ville = "";
+            }
+
             $data[] = [
-                'nom' => $etablissement->getNom(),
+            'nom' => $nom,
+            'ville' => $ville,
             ];
         }
-
+        
         return new JsonResponse($data);
     }
 }
