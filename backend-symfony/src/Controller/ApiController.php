@@ -34,11 +34,20 @@ class ApiController extends AbstractController
         $confirmPassword = $request->request->get('confirm_password');
 
         if ($password !== $confirmPassword) {
-            return new JsonResponse(['message' => 'Les mots de passe ne correspondent pas'], 400);
+            return new JsonResponse(['message' => 'ERREUR'], 400);
+        }
+        if ($password == null) {
+            return new JsonResponse(['message' => 'ERREUR'], 400);
+        }
+
+        // Vérification de l'adresse
+
+        if (!preg_match('/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/', $username)) {
+            return new JsonResponse(['message' => 'ERREUR'], 400);
         }
 
         $user = new UserEntity();
-        $user->setUsername($username);
+        $user->setMail($username);
         $user->setRole('ROLE_USER');
 
         $hashedPassword = $passwordHasher->hashPassword($user, $password);
@@ -47,7 +56,7 @@ class ApiController extends AbstractController
         $this->entityManager->persist($user);
         $this->entityManager->flush();
 
-        return new JsonResponse(['message' => 'Utilisateur créé avec succès']);
+        return new JsonResponse(['message' => 'ERREUR'], 200);
     }
 
         // Désérialisation du JSON flutter pour la connexion des utilisateurs

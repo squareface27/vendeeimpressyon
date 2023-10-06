@@ -43,6 +43,22 @@ class RegisterPage extends StatelessWidget {
     final String passwordconfirm = passwordConfirmController.text;
     final bool isValid = EmailValidator.validate(mail);
 
+    if (isValid == false) {
+      showErrorMessage(context, "Le format du mail est invalide");
+      return;
+    }
+
+    if (password.isEmpty || passwordconfirm.isEmpty) {
+      showErrorMessage(context,
+          "Le champ mot de passe et la confirmation du mot de passe ne peuvent pas être vides");
+      return;
+    }
+
+    if (password != passwordconfirm) {
+      showErrorMessage(context, "Les mots de passe ne correspondent pas");
+      return;
+    }
+
     final response = await http.post(
       Uri.parse(apiUrl),
       body: {
@@ -52,17 +68,13 @@ class RegisterPage extends StatelessWidget {
       },
     );
 
-    if (isValid == true) {
-      if (response.statusCode == 200) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => LoginPage()),
-        );
-      } else {
-        showErrorMessage(context, "Une erreur s'est produite");
-      }
+    if (response.statusCode == 200) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => LoginPage()),
+      );
     } else {
-      showErrorMessage(context, "Le format du mail est invalide");
+      return;
     }
   }
 
@@ -169,7 +181,7 @@ class RegisterPage extends StatelessWidget {
                           MaterialPageRoute(builder: (context) => LoginPage()),
                         );
                       },
-                      child: Text(
+                      child: const Text(
                         'Se connecter',
                         style: TextStyle(
                           color: Colors.blue,

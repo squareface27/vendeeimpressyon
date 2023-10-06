@@ -21,7 +21,7 @@ class UserEntity implements UserInterface
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $username;
+    private $mail;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -45,12 +45,12 @@ class UserEntity implements UserInterface
 
     public function getUsername(): ?string
     {
-        return $this->username;
+        return $this->mail;
     }
 
-    public function setUsername(string $username): self
+    public function setMail(string $username): self
     {
-        $this->username = $username;
+        $this->mail = $username;
 
         return $this;
     }
@@ -81,7 +81,7 @@ class UserEntity implements UserInterface
 
     public function getUserIdentifier()
     {
-        return $this->username;
+        return $this->mail;
     }
 
     public function getRoles()
