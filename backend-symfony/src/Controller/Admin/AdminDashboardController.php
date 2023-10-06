@@ -4,6 +4,8 @@ namespace App\Controller\Admin;
 
 use App\Entity\CategorieEntity;
 use App\Entity\CodePromoEntity;
+use App\Entity\CommandesEntity;
+use App\Entity\UserEntity;
 use App\Entity\EtablissementScolaireEntity;
 use App\Entity\SaleshistoryEntity;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
@@ -34,9 +36,12 @@ class AdminDashboardController extends AbstractDashboardController
         yield MenuItem::linkToDashboard('Accueil', 'fa fa-home');
         yield MenuItem::section('Établissements scolaires');
         yield MenuItem::linkToCrud('Liste des établissements', 'fa fa-list', EtablissementScolaireEntity::class);
+        yield MenuItem::section('Commandes');
+        yield MenuItem::linkToCrud('Commandes en cours', 'fa fa-folder-open', CommandesEntity::class);    
+        yield MenuItem::linkToCrud('Historique commandes', 'fa fa-book', SaleshistoryEntity::class);    
         yield MenuItem::section('Boutique');
         yield MenuItem::linkToCrud('Listes des catégories', 'fa fa-tags', CategorieEntity::class);
         yield MenuItem::linkToCrud('Listes des codes promos', 'fa fa-ticket', CodePromoEntity::class);
-        yield MenuItem::linkToCrud('Liste des commandes', 'fa fa-book', SaleshistoryEntity::class);    
+        yield MenuItem::linkToCrud('Listes des clients', 'fa fa-users', UserEntity::class);
     }
 }

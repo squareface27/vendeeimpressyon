@@ -33,6 +33,11 @@ class UserEntity implements UserInterface
      */
     private $role = '';
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $etablissement;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -91,5 +96,17 @@ class UserEntity implements UserInterface
 
     public function eraseCredentials()
     {
+    }
+
+    public function getetablissement(): ?string
+    {
+        return $this->etablissement;
+    }
+
+    public function setetablissement(string $etablissement): self
+    {
+        $this->etablissement = $etablissement;
+
+        return $this;
     }
 }
