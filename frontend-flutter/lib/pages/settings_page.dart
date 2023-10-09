@@ -1,38 +1,51 @@
 import 'package:flutter/material.dart';
+import 'package:settings_ui/settings_ui.dart';
 
-class Settings extends StatelessWidget {
-  const Settings({Key? key}) : super(key: key);
+class Settings extends StatefulWidget {
+  Settings({Key? key}) : super(key: key);
+
+  @override
+  _SettingsState createState() => _SettingsState();
+}
+
+class _SettingsState extends State<Settings> {
+  bool isSwitched = false;
+
+  // Fonction pour changer l'état de l'empreinte digitale
+  void toggleFingerprint(bool value) {
+    setState(() {
+      isSwitched = value;
+    });
+  }
+
+  void changeLanguage(BuildContext context) {}
+
+  void changeTheme(BuildContext context) {}
+
+  void changePassword(BuildContext context) {}
 
   @override
   Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.all(24.0),
-      child: Column(
-        children: [
-          Text(
-            'Settings Page',
-            style: TextStyle(
-                fontSize: 40, color: Colors.white, fontWeight: FontWeight.bold),
-          ),
-          SizedBox(
-            height: 100,
-          ),
-          CircleAvatar(
-            radius: 70,
-            child: Icon(
-              Icons.settings,
-              size: 120,
+    return Scaffold(
+        body: SettingsList(
+      sections: [
+        SettingsSection(
+          title: const Text('Common'),
+          tiles: <SettingsTile>[
+            SettingsTile.navigation(
+              leading: const Icon(Icons.language),
+              title: const Text('Langue'),
+              value: const Text('English'),
             ),
-          ),
-          SizedBox(
-            height: 100,
-          ),
-          Text(
-            'Settings Page Content',
-            style: TextStyle(fontSize: 30, color: Colors.white),
-          ),
-        ],
-      ),
-    );
+            SettingsTile.switchTile(
+              onToggle: (value) {},
+              initialValue: true,
+              leading: Icon(Icons.format_paint),
+              title: Text('Enable custom theme'),
+            ),
+          ],
+        ),
+      ],
+    ));
   }
 }

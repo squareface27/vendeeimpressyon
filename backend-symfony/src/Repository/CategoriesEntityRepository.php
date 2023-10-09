@@ -2,26 +2,26 @@
 
 namespace App\Repository;
 
-use App\Entity\Categorie;
+use App\Entity\CategoriesEntity;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Categorie>
+ * @extends ServiceEntityRepository<CategoriesEntity>
  *
- * @method Categorie|null find($id, $lockMode = null, $lockVersion = null)
- * @method Categorie|null findOneBy(array $criteria, array $orderBy = null)
- * @method Categorie[]    findAll()
- * @method Categorie[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method CategoriesEntity|null find($id, $lockMode = null, $lockVersion = null)
+ * @method CategoriesEntity|null findOneBy(array $criteria, array $orderBy = null)
+ * @method CategoriesEntity[]    findAll()
+ * @method CategoriesEntity[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class CategorieRepository extends ServiceEntityRepository
+class CategoriesEntityRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Categorie::class);
+        parent::__construct($registry, CategoriesEntity::class);
     }
 
-    public function add(Categorie $entity, bool $flush = false): void
+    public function add(CategoriesEntity $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
 
@@ -30,7 +30,7 @@ class CategorieRepository extends ServiceEntityRepository
         }
     }
 
-    public function remove(Categorie $entity, bool $flush = false): void
+    public function remove(CategoriesEntity $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
 
@@ -40,7 +40,7 @@ class CategorieRepository extends ServiceEntityRepository
     }
 
 //    /**
-//     * @return Categorie[] Returns an array of Categorie objects
+//     * @return CategoriesEntity[] Returns an array of CategoriesEntity objects
 //     */
 //    public function findByExampleField($value): array
 //    {
@@ -54,7 +54,7 @@ class CategorieRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?Categorie
+//    public function findOneBySomeField($value): ?CategoriesEntity
 //    {
 //        return $this->createQueryBuilder('c')
 //            ->andWhere('c.exampleField = :val')

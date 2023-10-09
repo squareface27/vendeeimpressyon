@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\UserEntity;
+use App\Repository\CategoriesEntityRepository;
 use App\Services\ApiAuthService;
 use App\Repository\UserEntityRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -94,8 +95,9 @@ class ApiController extends AbstractController
         
         return new JsonResponse($data);
     }
-        // Sérialisation des adresses-mail de la BDD vers JSON pour flutter (vérification si l'email est déjà associée à un compte)
 
+
+    // Sérialisation des adresses-mail de la BDD vers JSON pour flutter (vérification si l'email est déjà associée à un compte)
     public function getEtablissement(EntityManagerInterface $entityManager, EtablissementScolaireEntityRepository $etablissementRepository)
     {
         $etablissements = $etablissementRepository->findAll();
@@ -112,6 +114,26 @@ class ApiController extends AbstractController
             $data[] = [
             'nom' => $nom,
             'ville' => $ville,
+            ];
+        }
+        
+        return new JsonResponse($data);
+    }
+
+
+    // Sérialisation des catégories de la BDD vers JSON pour flutter
+    public function getCategories(EntityManagerInterface $entityManager, CategoriesEntityRepository $categoriesEntityRepositoryRepository)
+    {
+        $categories = $categoriesEntityRepositoryRepository->findAll();
+
+        $data = [];
+        foreach ($categories as $categorie) {
+            $name = $categorie->getName();
+            $image = $categorie->getImage();
+
+            $data[] = [
+            'name' => $name,
+            'image' => $image,
             ];
         }
         
