@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:vendeeimpressyon/pages/home_page.dart';
+import 'package:vendeeimpressyon/pages/navbar.dart';
 
 class LoginPage extends StatelessWidget {
   LoginPage({super.key});
@@ -46,7 +47,7 @@ class LoginPage extends StatelessWidget {
     final response = await http.post(
       Uri.parse(apiUrl),
       body: {
-        'username': mail,
+        'mail': mail,
         'password': password,
       },
     );
@@ -55,7 +56,7 @@ class LoginPage extends StatelessWidget {
       if (response.statusCode == 200) {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => HomePage()),
+          MaterialPageRoute(builder: (context) => NavBar()),
         );
       } else {
         showErrorMessage(context, "Le mot de passe ou l'email est incorrect.");

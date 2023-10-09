@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\UserEntity;
 use App\Services\ApiAuthService;
+use App\Repository\UserEntityRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,7 +30,7 @@ class ApiController extends AbstractController
     public function createUser(Request $request, UserPasswordHasherInterface $passwordHasher)
     {
 
-        $username = $request->request->get('username');
+        $username = $request->request->get('mail');
         $password = $request->request->get('password');
         $confirmPassword = $request->request->get('confirm_password');
 
@@ -63,7 +64,7 @@ class ApiController extends AbstractController
 
     public function login(Request $request, ApiAuthService $authService, UserPasswordHasherInterface $passwordHasher)
     {
-        $formUsername = $request->request->get('username');
+        $formUsername = $request->request->get('mail');
         $formPassword = $request->request->get('password');
 
         $user = $authService->getUserByUsername($formUsername);
@@ -76,6 +77,24 @@ class ApiController extends AbstractController
     }
 
         // Sérialisation du nom des établissements scolaire de la BDD vers JSON pour flutter
+
+    public function getEmail(EntityManagerInterface $entityManager, UserEntityRepository $UserEntityRepository)
+    {
+        $email = $UserEntityRepository->findAll();
+
+        $data = [];
+        foreach ($email as $email) {
+            $mail = $email->getUsername();
+
+
+            $data[] = [
+            'mail' => $mail,
+            ];
+        }
+        
+        return new JsonResponse($data);
+    }
+        // Sérialisation des adresses-mail de la BDD vers JSON pour flutter (vérification si l'email est déjà associée à un compte)
 
     public function getEtablissement(EntityManagerInterface $entityManager, EtablissementScolaireEntityRepository $etablissementRepository)
     {

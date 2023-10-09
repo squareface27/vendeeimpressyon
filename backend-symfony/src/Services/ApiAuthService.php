@@ -16,7 +16,7 @@ class ApiAuthService
 
     public function authenticate($formUsername, $formPassword)
     {
-        $query = "SELECT * FROM user_entity WHERE username = ? AND password = ?";
+        $query = "SELECT * FROM user_entity WHERE mail = ? AND password = ?";
         $result = $this->connection->executeQuery($query, [$formUsername, $formPassword]);
 
         if ($result->rowCount() > 0) {
@@ -28,7 +28,7 @@ class ApiAuthService
 
     public function getUserByUsername($username)
     {
-        $query = "SELECT * FROM user_entity WHERE username = ?";
+        $query = "SELECT * FROM user_entity WHERE mail = ?";
         $result = $this->connection->executeQuery($query, [$username]);
 
         $userData = $result->fetchAssociative();
@@ -39,7 +39,7 @@ class ApiAuthService
 
         // Créez un objet UserEntity à partir des données de la base de données
         $user = new UserEntity();
-        $user->setUsername($userData['username']);
+        $user->setMail($userData['mail']);
         $user->setPassword($userData['password']);
 
         return $user;
