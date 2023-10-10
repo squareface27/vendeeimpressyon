@@ -5,6 +5,7 @@ import 'package:vendeeimpressyon/pages/login_page.dart';
 import 'package:http/http.dart' as http;
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'dart:convert';
 
 class RegisterPage extends StatelessWidget {
   RegisterPage({super.key});
@@ -14,7 +15,8 @@ class RegisterPage extends StatelessWidget {
   final passwordController = TextEditingController();
   final passwordConfirmController = TextEditingController();
 
-  final apiUrl = dotenv.env['API_URL_REGISTER']!;
+  final apiUrlRegister = dotenv.env['API_URL_REGISTER']!;
+  final apiUrlGetMail = dotenv.env['API_URL_GET_MAIL']!;
 
   void showErrorMessage(BuildContext context, String message) {
     showDialog(
@@ -34,6 +36,30 @@ class RegisterPage extends StatelessWidget {
         );
       },
     );
+  }
+
+  // Désérialisation du fichier JSON des adresses-mail
+  Future<bool> isEmailAlreadyRegistered(String email) async {
+    final response = await http.get(
+      Uri.parse('$apiUrlGetMail?email=$email'),
+    );
+
+    if (response.statusCode == 200) {
+      final responseData = json.decode(response.body) as List<dynamic>;
+
+      final existsValue = responseData.any((item) {
+        if (item is Map<String, dynamic> && item.containsKey("mail")) {
+          final mailValue = item["mail"] as String;
+          return mailValue == email;
+        }
+        return false;
+      });
+
+      if (existsValue) {
+        return true;
+      }
+    }
+    return false;
   }
 
   // sign user in method
@@ -59,10 +85,17 @@ class RegisterPage extends StatelessWidget {
       return;
     }
 
+    // Vérifiez si l'e-mail existe déjà
+    final isEmailExists = await isEmailAlreadyRegistered(mail);
+    if (isEmailExists) {
+      showErrorMessage(context, "L'adresse mail est déjà utilisée");
+      return;
+    }
+
     final response = await http.post(
-      Uri.parse(apiUrl),
+      Uri.parse(apiUrlRegister),
       body: {
-        'username': mail,
+        'mail': mail,
         'password': password,
         'confirm_password': passwordconfirm,
       },

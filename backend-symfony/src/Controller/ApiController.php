@@ -51,6 +51,7 @@ class ApiController extends AbstractController
         $user = new UserEntity();
         $user->setMail($username);
         $user->setRole('ROLE_USER');
+        $user->setetablissement('autre');
 
         $hashedPassword = $passwordHasher->hashPassword($user, $password);
         $user->setPassword($hashedPassword);
