@@ -34,6 +34,7 @@ class ApiController extends AbstractController
         $username = $request->request->get('mail');
         $password = $request->request->get('password');
         $confirmPassword = $request->request->get('confirm_password');
+        $selectedEtablissement = $request->request->get('etablissement');
 
         if ($password !== $confirmPassword) {
             return new JsonResponse(['message' => 'ERREUR'], 400);
@@ -51,7 +52,7 @@ class ApiController extends AbstractController
         $user = new UserEntity();
         $user->setMail($username);
         $user->setRole('ROLE_USER');
-        $user->setetablissement('autre');
+        $user->setetablissement($selectedEtablissement);
 
         $hashedPassword = $passwordHasher->hashPassword($user, $password);
         $user->setPassword($hashedPassword);

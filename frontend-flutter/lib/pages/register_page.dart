@@ -7,16 +7,54 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'dart:convert';
 
-class RegisterPage extends StatelessWidget {
+class RegisterPage extends StatefulWidget {
   RegisterPage({super.key});
 
+  @override
+  _RegisterPageState createState() => _RegisterPageState();
+}
+
+class Etablissement {
+  final String nom;
+  final String ville;
+
+  Etablissement(this.nom, this.ville);
+}
+
+class _RegisterPageState extends State<RegisterPage> {
   // text editing controllers
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
   final passwordConfirmController = TextEditingController();
 
+  String? selectedEtablissement;
+  List<Etablissement> etablissements = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchEtablissements();
+  }
+
+  // Désérialisation du JSON des établissements
+  Future<void> fetchEtablissements() async {
+    final response = await http.get(Uri.parse(apiUrlGetEtablissement));
+    if (response.statusCode == 200) {
+      final responseData = json.decode(response.body) as List<dynamic>;
+      final etablissementsList = responseData.map((item) {
+        final nom = item["nom"].toString();
+        final ville = item["ville"].toString();
+        return Etablissement(nom, ville);
+      }).toList();
+      setState(() {
+        etablissements = etablissementsList;
+      });
+    }
+  }
+
   final apiUrlRegister = dotenv.env['API_URL_REGISTER']!;
   final apiUrlGetMail = dotenv.env['API_URL_GET_MAIL']!;
+  final apiUrlGetEtablissement = dotenv.env['API_URL_GET_ETABLISSEMENT']!;
 
   void showErrorMessage(BuildContext context, String message) {
     showDialog(
@@ -85,7 +123,7 @@ class RegisterPage extends StatelessWidget {
       return;
     }
 
-    // Vérifiez si l'e-mail existe déjà
+    // Check mail
     final isEmailExists = await isEmailAlreadyRegistered(mail);
     if (isEmailExists) {
       showErrorMessage(context, "L'adresse mail est déjà utilisée");
@@ -98,6 +136,7 @@ class RegisterPage extends StatelessWidget {
         'mail': mail,
         'password': password,
         'confirm_password': passwordconfirm,
+        'etablissement': selectedEtablissement,
       },
     );
 
@@ -157,7 +196,33 @@ class RegisterPage extends StatelessWidget {
                   obscureText: true,
                 ),
 
-                const SizedBox(height: 25),
+                const SizedBox(height: 10),
+
+                DropdownButton<String>(
+                  value:
+                      etablissements.isNotEmpty ? selectedEtablissement : null,
+                  items: [
+                    const DropdownMenuItem<String>(
+                      value: null,
+                      child: Text("Sélectionnez un établissement"),
+                    ),
+                    ...etablissements.map((etablissement) {
+                      final concatene =
+                          "${etablissement.nom} ${etablissement.ville}";
+                      return DropdownMenuItem<String>(
+                        value: concatene,
+                        child: Text(concatene),
+                      );
+                    }).toList(),
+                  ],
+                  onChanged: (value) {
+                    setState(() {
+                      selectedEtablissement = value;
+                    });
+                  },
+                ),
+
+                const SizedBox(height: 15),
 
                 // sign in button
                 MyButtonRegister(
@@ -166,7 +231,7 @@ class RegisterPage extends StatelessWidget {
                   },
                 ),
 
-                const SizedBox(height: 25),
+                const SizedBox(height: 15),
 
                 // or continue with
                 Padding(
