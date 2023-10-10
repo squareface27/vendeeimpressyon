@@ -15,3 +15,4 @@ const amberaccent = Colors.amberAccent;
 const lime = Colors.lime;
 const teal = Colors.teal;
 const white = Colors.white;
+const bluegrey = Colors.blueGrey;

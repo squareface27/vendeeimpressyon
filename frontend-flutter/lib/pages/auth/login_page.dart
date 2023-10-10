@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'dart:core';
 import 'package:vendeeimpressyon/components/button.dart';
 import 'package:vendeeimpressyon/components/textfield.dart';
-import 'package:vendeeimpressyon/pages/register_page.dart';
+import 'package:vendeeimpressyon/pages/auth/register_page.dart';
 import 'package:http/http.dart' as http;
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:vendeeimpressyon/pages/home_page.dart';
+import 'package:vendeeimpressyon/pages/auth/reset_password.dart';
 import 'package:vendeeimpressyon/pages/navbar.dart';
 
 class LoginPage extends StatelessWidget {
@@ -108,14 +108,23 @@ class LoginPage extends StatelessWidget {
                 // forgot password?
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Text(
-                        'Mot de passe oublié ?',
-                        style: TextStyle(color: Colors.grey[600]),
-                      ),
-                    ],
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ForgotPassword()),
+                      );
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Text(
+                          'Mot de passe oublié ?',
+                          style: TextStyle(color: Colors.grey[600]),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vendeeimpressyon/components/button.dart';
 import 'package:vendeeimpressyon/components/textfield.dart';
-import 'package:vendeeimpressyon/pages/login_page.dart';
+import 'package:vendeeimpressyon/pages/auth/login_page.dart';
 import 'package:http/http.dart' as http;
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
