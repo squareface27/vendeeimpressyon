@@ -12,9 +12,8 @@ class ForgotPassword extends StatelessWidget {
 
   // text editing controllers
   final mailController = TextEditingController();
-  final passwordController = TextEditingController();
 
-  final apiUrl = dotenv.env['API_URL_LOGIN']!;
+  final apiUrlResetPassword = dotenv.env['API_URL_RESET_PASSWORD']!;
 
   void showErrorMessage(BuildContext context, String message) {
     showDialog(
@@ -37,14 +36,18 @@ class ForgotPassword extends StatelessWidget {
   }
 
   // mot de passe oublié
-  void signUserIn(BuildContext context) async {
+  void ResetPassword(BuildContext context) async {
     final String mail = mailController.text;
 
     final response = await http.post(
-      Uri.parse(apiUrl),
+      Uri.parse(apiUrlResetPassword),
       body: {
         'mail': mail,
       },
+    );
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => LoginPage()),
     );
   }
 
@@ -92,9 +95,9 @@ class ForgotPassword extends StatelessWidget {
                 const SizedBox(height: 20),
 
                 // button
-                MyButtonResetPassword(
-                  onTap: () {},
-                ),
+                MyButtonResetPassword(onTap: () {
+                  ResetPassword(context);
+                }),
 
                 const SizedBox(height: 50),
 
