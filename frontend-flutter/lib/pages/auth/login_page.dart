@@ -8,15 +8,43 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:vendeeimpressyon/pages/auth/reset_password.dart';
 import 'package:vendeeimpressyon/pages/navbar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class LoginPage extends StatelessWidget {
-  LoginPage({super.key});
+class LoginPage extends StatefulWidget {
+  LoginPage({Key? key}) : super(key: key);
 
-  // text editing controllers
+  @override
+  _LoginPageState createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
   final mailController = TextEditingController();
   final passwordController = TextEditingController();
-
+  bool rememberMe = false;
   final apiUrl = dotenv.env['API_URL_LOGIN']!;
+
+  @override
+  void initState() {
+    super.initState();
+    loadSavedCredentials();
+  }
+
+  void saveCredentials(String email, String password) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('email', email);
+    await prefs.setString('password', password);
+  }
+
+  void loadSavedCredentials() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? savedEmail = prefs.getString('email');
+    final String? savedPassword = prefs.getString('password');
+
+    if (savedEmail != null && savedPassword != null) {
+      mailController.text = savedEmail;
+      passwordController.text = savedPassword;
+    }
+  }
 
   void showErrorMessage(BuildContext context, String message) {
     showDialog(
@@ -54,6 +82,9 @@ class LoginPage extends StatelessWidget {
 
     if (isValid == true) {
       if (response.statusCode == 200) {
+        if (rememberMe) {
+          saveCredentials(mail, password);
+        }
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => NavBar()),
@@ -135,6 +166,20 @@ class LoginPage extends StatelessWidget {
                   onTap: () {
                     signUserIn(context);
                   },
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text('Se souvenir de moi'),
+                    Checkbox(
+                      value: rememberMe,
+                      onChanged: (bool? value) {
+                        setState(() {
+                          rememberMe = value ?? false;
+                        });
+                      },
+                    ),
+                  ],
                 ),
 
                 const SizedBox(height: 50),
