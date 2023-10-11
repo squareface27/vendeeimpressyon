@@ -43,27 +43,63 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: const Text('Vendée Impress\'Yon'),
       ),
-      body: GridView.extent(
-        maxCrossAxisExtent: 180,
-        crossAxisSpacing: 8,
-        mainAxisSpacing: 8,
-        children: categories.map((category) {
-          return Card(
-            child: Column(
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          const Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Text(
+              'Nos produits',
+              style: TextStyle(
+                fontSize: 20.0,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 25.0),
+            child: Row(
               children: [
-                Image.network(
-                  category.image,
-                  fit: BoxFit.cover,
-                  height: 150.0,
+                Expanded(
+                  child: Divider(
+                    thickness: 0.5,
+                    color: Colors.grey[400],
+                  ),
                 ),
-                Text(
-                  category.name,
-                  textAlign: TextAlign.center,
+                Expanded(
+                  child: Divider(
+                    thickness: 0.5,
+                    color: Colors.grey[400],
+                  ),
                 ),
               ],
             ),
-          );
-        }).toList(),
+          ),
+          Expanded(
+            child: GridView.extent(
+              maxCrossAxisExtent: 180,
+              crossAxisSpacing: 8,
+              mainAxisSpacing: 8,
+              children: categories.map((category) {
+                return Card(
+                  child: Column(
+                    children: [
+                      Image.network(
+                        category.image,
+                        fit: BoxFit.cover,
+                        height: 150.0,
+                      ),
+                      Text(
+                        category.name,
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
+        ],
       ),
     );
   }
