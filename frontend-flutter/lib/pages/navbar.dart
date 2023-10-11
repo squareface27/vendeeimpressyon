@@ -24,7 +24,7 @@ class NavBar extends StatelessWidget {
           navigatorkey: _tab2navigatorKey,
         ),
         PersistentTabItem(
-          tab: Settings(),
+          tab: const Settings(),
           icon: Icons.settings,
           title: '',
           navigatorkey: _tab3navigatorKey,
