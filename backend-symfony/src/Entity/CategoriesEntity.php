@@ -34,7 +34,6 @@ class CategoriesEntity
      */
      private $articles;
 
-
     public function getId(): ?int
     {
         return $this->id;
@@ -53,9 +52,9 @@ class CategoriesEntity
     }
 
     public function getImage(): ?string
-    {
-        return $this->image;
-    }
+{
+        return 'http://IP/vendeeimpressyon/backend-symfony/public/uploads/images/' . $this->image;
+}
 
     public function setImage(string $image): self
     {
