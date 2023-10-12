@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ajouter un article{% endblock %}
+
+{% block body %}
+    <h1>Ajouter un article</h1>
+
+    {{ include('articles_entity/_form.html.twig') }}
+
+    <a href="{{ path('app_articles_entity_index') }}">Retour à la liste</a>
+{% endblock %}

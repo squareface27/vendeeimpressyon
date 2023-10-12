@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:vendeeimpressyon/pages/souscategorie.dart';
 
 class Category {
   final String name;
@@ -81,19 +82,29 @@ class _HomePageState extends State<HomePage> {
               crossAxisSpacing: 8,
               mainAxisSpacing: 8,
               children: categories.map((category) {
-                return Card(
-                  child: Column(
-                    children: [
-                      Image.network(
-                        category.image,
-                        fit: BoxFit.cover,
-                        height: 150.0,
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => SousCategorie(category.name),
                       ),
-                      Text(
-                        category.name,
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
+                    );
+                  },
+                  child: Card(
+                    child: Column(
+                      children: [
+                        Image.network(
+                          category.image,
+                          fit: BoxFit.cover,
+                          height: 150.0,
+                        ),
+                        Text(
+                          category.name,
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
                   ),
                 );
               }).toList(),

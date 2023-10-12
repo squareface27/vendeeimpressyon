@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\CategoriesEntity;
+use App\Entity\ArticlesEntity;
 use App\Entity\CodePromoEntity;
 use App\Entity\CommandesEntity;
 use App\Entity\UserEntity;
@@ -38,6 +39,7 @@ class AdminDashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Historique commandes', 'fa fa-book', SaleshistoryEntity::class);    
         yield MenuItem::section('Boutique');
         yield MenuItem::linkToCrud('Listes des catégories', 'fa fa-tags', CategoriesEntity::class);
+        yield MenuItem::linkToCrud('Listes des articles', 'fa fa-shopping-bag', ArticlesEntity::class);
         yield MenuItem::linkToCrud('Listes des codes promos', 'fa fa-ticket', CodePromoEntity::class);
         yield MenuItem::linkToCrud('Listes des clients', 'fa fa-users', UserEntity::class);
     }

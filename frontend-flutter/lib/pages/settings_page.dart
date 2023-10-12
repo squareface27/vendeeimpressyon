@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:vendeeimpressyon/colors.dart';
 
 class Settings extends StatefulWidget {
   const Settings({Key? key}) : super(key: key);
@@ -11,11 +12,10 @@ class Settings extends StatefulWidget {
 }
 
 class _SettingsState extends State<Settings> {
-  TextStyle headingStyle = const TextStyle(
-      fontSize: 16, fontWeight: FontWeight.w600, color: Colors.red);
+  TextStyle headingStyle =
+      const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: blue);
 
   bool lockAppSwitchVal = true;
-  bool fingerprintSwitchVal = false;
   bool changePassSwitchVal = true;
 
   TextStyle headingStyleIOS = const TextStyle(
@@ -32,8 +32,8 @@ class _SettingsState extends State<Settings> {
             debugShowCheckedModeBanner: false,
             theme: ThemeData(
               colorScheme: ColorScheme.fromSwatch().copyWith(
-                primary: Colors.redAccent,
-                secondary: Colors.redAccent,
+                primary: blue,
+                secondary: blue,
               ),
             ),
             home: Scaffold(
@@ -74,24 +74,11 @@ class _SettingsState extends State<Settings> {
                       ),
                       const Divider(),
                       ListTile(
-                        leading: const Icon(Icons.fingerprint),
-                        title: const Text("Utiliser empreinte digitale"),
-                        trailing: Switch(
-                            value: fingerprintSwitchVal,
-                            activeColor: Colors.redAccent,
-                            onChanged: (val) {
-                              setState(() {
-                                fingerprintSwitchVal = val;
-                              });
-                            }),
-                      ),
-                      const Divider(),
-                      ListTile(
                         leading: const Icon(Icons.lock),
                         title: const Text("Changer de Mot de Passe"),
                         trailing: Switch(
                             value: changePassSwitchVal,
-                            activeColor: Colors.redAccent,
+                            activeColor: blue,
                             onChanged: (val) {
                               setState(() {
                                 changePassSwitchVal = val;
@@ -119,7 +106,7 @@ class _SettingsState extends State<Settings> {
             debugShowCheckedModeBanner: false,
             home: CupertinoPageScaffold(
               navigationBar: const CupertinoNavigationBar(
-                backgroundColor: CupertinoColors.destructiveRed,
+                backgroundColor: CupertinoColors.activeBlue,
                 middle: Text("Paramètres"),
               ),
               child: Container(
@@ -231,25 +218,6 @@ class _SettingsState extends State<Settings> {
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const SizedBox(width: 12),
-                                const Icon(
-                                  Icons.fingerprint,
-                                  color: Colors.grey,
-                                ),
-                                const SizedBox(width: 12),
-                                const Text("Utiliser l'Empreinte Digitale"),
-                                const Spacer(),
-                                CupertinoSwitch(
-                                  value: fingerprintSwitchVal,
-                                  onChanged: (val) {
-                                    setState(() {
-                                      fingerprintSwitchVal = val;
-                                    });
-                                  },
-                                ),
-                                const SizedBox(width: 8),
-                              ],
                             ),
                           ),
                           const Divider(),
@@ -271,7 +239,7 @@ class _SettingsState extends State<Settings> {
                                 const Spacer(),
                                 CupertinoSwitch(
                                   value: changePassSwitchVal,
-                                  activeColor: CupertinoColors.destructiveRed,
+                                  activeColor: CupertinoColors.activeBlue,
                                   onChanged: (val) {
                                     setState(() {
                                       changePassSwitchVal = val;
