@@ -2,9 +2,10 @@
 
 namespace App\Entity;
 
-use App\Repository\CategoriesEntityRepository;
 use App\Entity\ArticlesEntity;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\Collection;
+use App\Repository\CategoriesEntityRepository;
 
 /**
  * @ORM\Entity(repositoryClass=CategoriesEntityRepository::class)
@@ -63,12 +64,12 @@ class CategoriesEntity
         return $this;
     }
 
-    public function getArticles(): ?string
+    public function getArticles(): ?Collection
     {
         return $this->articles;
     }
 
-    public function setArticles(string $articles): self
+    public function setArticles(Collection $articles): self
     {
         $this->image = $articles;
 

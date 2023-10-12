@@ -29,10 +29,10 @@ class ArticlesEntity
     private $unitprice;
 
     /**
-    * @ORM\ManyToOne(targetEntity=CategoriesEntity::class, inversedBy="articles")
-    * @ORM\JoinColumn(name="category_id", referencedColumnName="id", nullable=false)
-    */
-    private $category;
+     * @ORM\ManyToOne(targetEntity=CategoriesEntity::class, inversedBy="articles")
+     * @ORM\JoinColumn(name="category_id", referencedColumnName="id", nullable=false)
+     */
+    public $category;
 
 
     public function getId(): ?int
@@ -62,6 +62,11 @@ class ArticlesEntity
         $this->unitprice = $unitprice;
 
         return $this;
+    }
+
+    public function getCategoryName(): ?string
+    {
+    return $this->category->getName();
     }
 
 }
