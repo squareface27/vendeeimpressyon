@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\ArticlesEntity;
 use App\Entity\UserEntity;
 use App\Repository\CategoriesEntityRepository;
+use App\Repository\ArticlesEntityRepository;
 use App\Services\ApiAuthService;
 use App\Repository\UserEntityRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -124,9 +126,9 @@ class ApiController extends AbstractController
 
 
     // Sérialisation des catégories de la BDD vers JSON pour flutter
-    public function getCategories(EntityManagerInterface $entityManager, CategoriesEntityRepository $categoriesEntityRepositoryRepository)
+    public function getCategories(EntityManagerInterface $entityManager, CategoriesEntityRepository $categoriesEntityRepository)
     {
-        $categories = $categoriesEntityRepositoryRepository->findAll();
+        $categories = $categoriesEntityRepository->findAll();
 
         $data = [];
         foreach ($categories as $categorie) {
@@ -136,6 +138,29 @@ class ApiController extends AbstractController
             $data[] = [
             'name' => $name,
             'image' => $image,
+            ];
+        }
+        
+        return new JsonResponse($data);
+    }
+
+    // Sérialisation des souscatégories de la BDD vers JSON pour flutter
+    public function getSousCategories(EntityManagerInterface $entityManager, ArticlesEntityRepository $articlesEntityRepository)
+    {
+        $souscategories = $articlesEntityRepository->findAll();
+
+        $data = [];
+        foreach ($souscategories as $souscategorie) {
+            $name = $souscategorie->getName();
+            $price = $souscategorie->getUnitprice();
+            $image = $souscategorie->getImage();
+            $categorieId = $souscategorie->getCategoryName();
+
+            $data[] = [
+            'name' => $name,
+            'unitprice' => $price,
+            'image' => $image,
+            'categorieid' => $categorieId,
             ];
         }
         

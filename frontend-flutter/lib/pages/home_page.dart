@@ -87,7 +87,7 @@ class _HomePageState extends State<HomePage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => SousCategorie(category.name),
+                        builder: (context) => SousCategoriePage(category.name),
                       ),
                     );
                   },

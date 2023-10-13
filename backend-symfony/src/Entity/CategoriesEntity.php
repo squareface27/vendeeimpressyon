@@ -52,9 +52,9 @@ class CategoriesEntity
     }
 
     public function getImage(): ?string
-{
-        return 'http://IP/vendeeimpressyon/backend-symfony/public/uploads/images/' . $this->image;
-}
+    {
+        return 'http://IP/vendeeimpressyon/backend-symfony/public/uploads/images/categories/' . $this->image;
+    }
 
     public function setImage(string $image): self
     {

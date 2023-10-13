@@ -24,10 +24,10 @@ class CategoriesEntityCrudController extends AbstractCrudController
             TextField::new('name')->setLabel('Nom de la catégorie'),
             ImageField::new('image')
                 ->setLabel('Image de la catégorie')
-                ->setUploadDir('public/uploads/images')
+                ->setUploadDir('public/uploads/images/categories')
                 ->setRequired(true)
                 ->setUploadedFileNamePattern('[randomhash].[extension]')
-                ->setHelp('Téléversez une image au format PNG')
+                ->setHelp('Téléversez une image au format PNG ou JPG')
         ];
     }
     

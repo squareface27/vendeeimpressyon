@@ -1,21 +1,115 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-class SousCategorie extends StatelessWidget {
+class SousCategorie {
+  final String name;
+  final String prix;
+  final String image;
+  final String categorieid;
+
+  SousCategorie(this.name, this.prix, this.image, this.categorieid);
+}
+
+class SousCategoriePage extends StatefulWidget {
   final String categoryName;
 
-  SousCategorie(this.categoryName);
+  SousCategoriePage(this.categoryName);
+
+  @override
+  _SousCategoriePageState createState() => _SousCategoriePageState();
+}
+
+class _SousCategoriePageState extends State<SousCategoriePage> {
+  List<SousCategorie> souscategories = [];
+  List<SousCategorie> selectedCategoryArticles = [];
+
+  final apiUrl = dotenv.env['API_URL_GET_SOUSCATEGORIES']!;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchCategories();
+  }
+
+  Future<void> fetchCategories() async {
+    final response = await http.get(Uri.parse(apiUrl));
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      final categoryName = widget.categoryName;
+
+      final filteredArticles = List<SousCategorie>.from(data.map((item) =>
+          SousCategorie(item['name'], item['unitprice'].toString(),
+              item['image'], item['categorieid'])));
+
+      selectedCategoryArticles = filteredArticles
+          .where((article) => article.categorieid == categoryName)
+          .toList();
+
+      setState(() {
+        souscategories = selectedCategoryArticles;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    // Ici, vous devrez récupérer les articles de la catégorie sélectionnée
-    // depuis votre API et les afficher dans un GridView, de manière similaire à votre page d'accueil.
-    // Vous pouvez utiliser une méthode similaire à `fetchCategories` pour récupérer les articles de la catégorie.
+    final categoryName = widget.categoryName;
     return Scaffold(
       appBar: AppBar(
-        title: Text(categoryName),
+        title: const Text('Vendée Impress\'Yon'),
       ),
-      body: Center(
-        child: Text('Liste des articles de la catégorie $categoryName'),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 25.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Divider(
+                    thickness: 0.5,
+                    color: Colors.grey[400],
+                  ),
+                ),
+                Expanded(
+                  child: Divider(
+                    thickness: 0.5,
+                    color: Colors.grey[400],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: GridView.extent(
+              maxCrossAxisExtent: 180,
+              crossAxisSpacing: 8,
+              mainAxisSpacing: 8,
+              children: selectedCategoryArticles.map((article) {
+                return GestureDetector(
+                  onTap: () {},
+                  child: Card(
+                    child: Column(
+                      children: [
+                        Image.network(
+                          article.image,
+                          fit: BoxFit.cover,
+                          height: 150.0,
+                        ),
+                        Text(
+                          article.name,
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
+        ],
       ),
     );
   }

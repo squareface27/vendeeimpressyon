@@ -34,6 +34,11 @@ class ArticlesEntity
      */
     public $category;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $image;
+
 
     public function getId(): ?int
     {
@@ -67,6 +72,18 @@ class ArticlesEntity
     public function getCategoryName(): ?string
     {
     return $this->category->getName();
+    }
+
+    public function getImage(): ?string
+    {
+        return 'http://IP/vendeeimpressyon/backend-symfony/public/uploads/images/articles/' . $this->image;
+    }
+
+    public function setImage(string $image): self
+    {
+        $this->image = $image;
+
+        return $this;
     }
 
 }
