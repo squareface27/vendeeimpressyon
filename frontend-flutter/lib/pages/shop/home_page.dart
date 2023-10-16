@@ -2,30 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:vendeeimpressyon/pages/shop/souscategorie.dart';
 
-class SousCategorie {
+class Category {
   final String name;
-  final String prix;
   final String image;
-  final String categorieid;
 
-  SousCategorie(this.name, this.prix, this.image, this.categorieid);
+  Category(this.name, this.image);
 }
 
-class SousCategoriePage extends StatefulWidget {
-  final String categoryName;
-
-  SousCategoriePage(this.categoryName);
-
+class HomePage extends StatefulWidget {
   @override
-  _SousCategoriePageState createState() => _SousCategoriePageState();
+  _HomePageState createState() => _HomePageState();
 }
 
-class _SousCategoriePageState extends State<SousCategoriePage> {
-  List<SousCategorie> souscategories = [];
-  List<SousCategorie> selectedCategoryArticles = [];
+class _HomePageState extends State<HomePage> {
+  List<Category> categories = [];
 
-  final apiUrl = dotenv.env['API_URL_GET_SOUSCATEGORIES']!;
+  final apiUrl = dotenv.env['API_URL_GET_CATEGORIES']!;
 
   @override
   void initState() {
@@ -37,25 +31,15 @@ class _SousCategoriePageState extends State<SousCategoriePage> {
     final response = await http.get(Uri.parse(apiUrl));
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
-      final categoryName = widget.categoryName;
-
-      final filteredArticles = List<SousCategorie>.from(data.map((item) =>
-          SousCategorie(item['name'], item['unitprice'].toString(),
-              item['image'], item['categorieid'])));
-
-      selectedCategoryArticles = filteredArticles
-          .where((article) => article.categorieid == categoryName)
-          .toList();
-
       setState(() {
-        souscategories = selectedCategoryArticles;
+        categories = List<Category>.from(
+            data.map((item) => Category(item['name'], item['image'])));
       });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final categoryName = widget.categoryName;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Vendée Impress\'Yon'),
@@ -63,6 +47,16 @@ class _SousCategoriePageState extends State<SousCategoriePage> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
+          const Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Text(
+              'Nos catégories',
+              style: TextStyle(
+                fontSize: 20.0,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 25.0),
             child: Row(
@@ -87,19 +81,26 @@ class _SousCategoriePageState extends State<SousCategoriePage> {
               maxCrossAxisExtent: 180,
               crossAxisSpacing: 8,
               mainAxisSpacing: 8,
-              children: selectedCategoryArticles.map((article) {
+              children: categories.map((category) {
                 return GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => SousCategoriePage(category.name),
+                      ),
+                    );
+                  },
                   child: Card(
                     child: Column(
                       children: [
                         Image.network(
-                          article.image,
+                          category.image,
                           fit: BoxFit.cover,
                           height: 150.0,
                         ),
                         Text(
-                          article.name,
+                          category.name,
                           textAlign: TextAlign.center,
                         ),
                       ],

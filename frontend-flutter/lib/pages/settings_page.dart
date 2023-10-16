@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:vendeeimpressyon/colors.dart';
+import 'package:restart_app/restart_app.dart';
 
 class Settings extends StatefulWidget {
   const Settings({Key? key}) : super(key: key);
@@ -14,6 +15,10 @@ class Settings extends StatefulWidget {
 class _SettingsState extends State<Settings> {
   TextStyle headingStyle =
       const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: blue);
+
+  void _navigateToLogin(BuildContext context) {
+    Restart.restartApp();
+  }
 
   bool lockAppSwitchVal = true;
   bool changePassSwitchVal = true;
@@ -47,7 +52,7 @@ class _SettingsState extends State<Settings> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
+                      const Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                       ),
                       Row(
@@ -57,14 +62,12 @@ class _SettingsState extends State<Settings> {
                         ],
                       ),
                       const Divider(),
-                      const ListTile(
-                        leading: Icon(Icons.mail),
-                        title: Text("Email"),
-                      ),
-                      const Divider(),
-                      const ListTile(
-                        leading: Icon(Icons.exit_to_app),
-                        title: Text("Se Déconnecter"),
+                      ListTile(
+                        leading: const Icon(Icons.exit_to_app),
+                        title: const Text("Se Déconnecter"),
+                        onTap: () {
+                          _navigateToLogin(context);
+                        },
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -73,17 +76,9 @@ class _SettingsState extends State<Settings> {
                         ],
                       ),
                       const Divider(),
-                      ListTile(
-                        leading: const Icon(Icons.lock),
-                        title: const Text("Changer de Mot de Passe"),
-                        trailing: Switch(
-                            value: changePassSwitchVal,
-                            activeColor: blue,
-                            onChanged: (val) {
-                              setState(() {
-                                changePassSwitchVal = val;
-                              });
-                            }),
+                      const ListTile(
+                        leading: Icon(Icons.lock),
+                        title: Text("Changer de Mot de Passe"),
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -93,7 +88,7 @@ class _SettingsState extends State<Settings> {
                       ),
                       const ListTile(
                         leading: Icon(Icons.file_open_outlined),
-                        title: Text("Condition générale de vente"),
+                        title: Text("Conditions Générales de Vente"),
                       ),
                       const Divider(),
                     ],
@@ -142,21 +137,6 @@ class _SettingsState extends State<Settings> {
                             child: const Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                SizedBox(width: 12),
-                                Icon(
-                                  Icons.mail,
-                                  color: Colors.grey,
-                                ),
-                                SizedBox(width: 12),
-                                Text("Email"),
-                                Spacer(),
-                                Icon(
-                                  CupertinoIcons.right_chevron,
-                                  color: CupertinoColors.inactiveGray,
-                                ),
-                                SizedBox(width: 8),
-                              ],
                             ),
                           ),
                           const Divider(),
@@ -215,7 +195,7 @@ class _SettingsState extends State<Settings> {
                             alignment: Alignment.center,
                             width: double.infinity,
                             height: 38,
-                            child: Row(
+                            child: const Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               mainAxisAlignment: MainAxisAlignment.center,
                             ),
@@ -225,28 +205,18 @@ class _SettingsState extends State<Settings> {
                             alignment: Alignment.center,
                             width: double.infinity,
                             height: 38,
-                            child: Row(
+                            child: const Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                const SizedBox(width: 12),
-                                const Icon(
+                                SizedBox(width: 12),
+                                Icon(
                                   Icons.lock,
                                   color: Colors.grey,
                                 ),
-                                const SizedBox(width: 12),
-                                const Text("Changer de Mot de Passe"),
-                                const Spacer(),
-                                CupertinoSwitch(
-                                  value: changePassSwitchVal,
-                                  activeColor: CupertinoColors.activeBlue,
-                                  onChanged: (val) {
-                                    setState(() {
-                                      changePassSwitchVal = val;
-                                    });
-                                  },
-                                ),
-                                const SizedBox(width: 8),
+                                SizedBox(width: 12),
+                                Text("Changer de Mot de Passe"),
+                                SizedBox(width: 8),
                               ],
                             ),
                           ),
@@ -286,7 +256,7 @@ class _SettingsState extends State<Settings> {
                                   color: Colors.grey,
                                 ),
                                 SizedBox(width: 12),
-                                Text("Condition générale de vente"),
+                                Text("Conditions générales de vente"),
                                 Spacer(),
                                 Icon(
                                   CupertinoIcons.right_chevron,

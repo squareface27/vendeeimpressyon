@@ -21,6 +21,7 @@ dependencies:
   email_validator: ^2.1.17
   settings_ui: ^2.0.2
   device_preview: ^1.1.0
+  restart_app: ^1.2.1
 
 dev_dependencies:
   flutter_test:

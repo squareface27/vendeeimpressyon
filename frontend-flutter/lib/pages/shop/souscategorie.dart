@@ -2,24 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:vendeeimpressyon/pages/souscategorie.dart';
 
-class Category {
+class SousCategorie {
   final String name;
+  final String prix;
   final String image;
+  final String categorieid;
 
-  Category(this.name, this.image);
+  SousCategorie(this.name, this.prix, this.image, this.categorieid);
 }
 
-class HomePage extends StatefulWidget {
+class SousCategoriePage extends StatefulWidget {
+  final String categoryName;
+
+  SousCategoriePage(this.categoryName);
+
   @override
-  _HomePageState createState() => _HomePageState();
+  _SousCategoriePageState createState() => _SousCategoriePageState();
 }
 
-class _HomePageState extends State<HomePage> {
-  List<Category> categories = [];
+class _SousCategoriePageState extends State<SousCategoriePage> {
+  List<SousCategorie> souscategories = [];
+  List<SousCategorie> selectedCategoryArticles = [];
 
-  final apiUrl = dotenv.env['API_URL_GET_CATEGORIES']!;
+  final apiUrl = dotenv.env['API_URL_GET_SOUSCATEGORIES']!;
 
   @override
   void initState() {
@@ -31,15 +37,25 @@ class _HomePageState extends State<HomePage> {
     final response = await http.get(Uri.parse(apiUrl));
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
+      final categoryName = widget.categoryName;
+
+      final filteredArticles = List<SousCategorie>.from(data.map((item) =>
+          SousCategorie(item['name'], item['unitprice'].toString(),
+              item['image'], item['categorieid'])));
+
+      selectedCategoryArticles = filteredArticles
+          .where((article) => article.categorieid == categoryName)
+          .toList();
+
       setState(() {
-        categories = List<Category>.from(
-            data.map((item) => Category(item['name'], item['image'])));
+        souscategories = selectedCategoryArticles;
       });
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final categoryName = widget.categoryName;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Vendée Impress\'Yon'),
@@ -81,26 +97,19 @@ class _HomePageState extends State<HomePage> {
               maxCrossAxisExtent: 180,
               crossAxisSpacing: 8,
               mainAxisSpacing: 8,
-              children: categories.map((category) {
+              children: selectedCategoryArticles.map((article) {
                 return GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => SousCategoriePage(category.name),
-                      ),
-                    );
-                  },
+                  onTap: () {},
                   child: Card(
                     child: Column(
                       children: [
                         Image.network(
-                          category.image,
+                          article.image,
                           fit: BoxFit.cover,
                           height: 150.0,
                         ),
                         Text(
-                          category.name,
+                          article.name,
                           textAlign: TextAlign.center,
                         ),
                       ],
