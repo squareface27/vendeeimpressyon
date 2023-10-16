@@ -153,12 +153,14 @@ class ApiController extends AbstractController
         $data = [];
         foreach ($souscategories as $souscategorie) {
             $name = $souscategorie->getName();
+            $description = $souscategorie->getDescription();
             $price = $souscategorie->getUnitprice();
             $image = $souscategorie->getImage();
             $categorieId = $souscategorie->getCategoryName();
 
             $data[] = [
             'name' => $name,
+            'description' => $description,
             'unitprice' => $price,
             'image' => $image,
             'categorieid' => $categorieId,

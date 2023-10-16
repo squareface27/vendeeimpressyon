@@ -2,14 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:vendeeimpressyon/pages/shop/product.dart';
 
 class SousCategorie {
   final String name;
   final String prix;
   final String image;
+  final String description;
   final String categorieid;
 
-  SousCategorie(this.name, this.prix, this.image, this.categorieid);
+  SousCategorie(
+      this.name, this.prix, this.image, this.categorieid, this.description);
 }
 
 class SousCategoriePage extends StatefulWidget {
@@ -41,7 +44,7 @@ class _SousCategoriePageState extends State<SousCategoriePage> {
 
       final filteredArticles = List<SousCategorie>.from(data.map((item) =>
           SousCategorie(item['name'], item['unitprice'].toString(),
-              item['image'], item['categorieid'])));
+              item['image'], item['categorieid'], item['description'])));
 
       selectedCategoryArticles = filteredArticles
           .where((article) => article.categorieid == categoryName)
@@ -99,7 +102,18 @@ class _SousCategoriePageState extends State<SousCategoriePage> {
               mainAxisSpacing: 8,
               children: selectedCategoryArticles.map((article) {
                 return GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => ProductPage(
+                          name: article.name,
+                          prix: article.prix,
+                          image: article.image,
+                          description: article.description,
+                        ),
+                      ),
+                    );
+                  },
                   child: Card(
                     child: Column(
                       children: [

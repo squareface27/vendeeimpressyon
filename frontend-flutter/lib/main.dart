@@ -10,8 +10,7 @@ final apiUrl = dotenv.env['API_URL_SETTINGS']!;
 
 Future<void> main() async {
   await dotenv.load();
-  final response = await http
-      .get(Uri.parse(apiUrl)); // Utilisez http.get pour obtenir les données.
+  final response = await http.get(Uri.parse(apiUrl));
 
   bool isVacationMode = false;
 
