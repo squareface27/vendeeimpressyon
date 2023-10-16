@@ -2,15 +2,16 @@
 
 namespace App\Controller;
 
-use App\Entity\ArticlesEntity;
 use App\Entity\UserEntity;
-use App\Repository\CategoriesEntityRepository;
-use App\Repository\ArticlesEntityRepository;
+use App\Entity\ArticlesEntity;
 use App\Services\ApiAuthService;
 use App\Repository\UserEntityRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
+use App\Repository\ArticlesEntityRepository;
+use App\Repository\SettingsEntityRepository;
 use Symfony\Component\HttpFoundation\Request;
+use App\Repository\CategoriesEntityRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -161,6 +162,23 @@ class ApiController extends AbstractController
             'unitprice' => $price,
             'image' => $image,
             'categorieid' => $categorieId,
+            ];
+        }
+        
+        return new JsonResponse($data);
+    }
+
+    // Sérialisation du mode vacance de la BDD vers JSON pour flutter
+    public function getSettings(EntityManagerInterface $entityManager, SettingsEntityRepository $settingsEntityRepository)
+    {
+        $settings = $settingsEntityRepository->findAll();
+
+        $data = [];
+        foreach ($settings as $settings) {
+            $vacance = $settings->isVacance();
+
+            $data[] = [
+            'vacance' => $vacance,
             ];
         }
         
