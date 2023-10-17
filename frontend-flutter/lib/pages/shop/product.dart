@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter_pdfview/flutter_pdfview.dart';
+import 'dart:io';
 
-class ProductPage extends StatelessWidget {
+class ProductPage extends StatefulWidget {
   final String name;
-  final String prix;
+  final double prix;
   final String image;
   final String description;
 
@@ -14,10 +17,57 @@ class ProductPage extends StatelessWidget {
   });
 
   @override
+  _ProductPageState createState() => _ProductPageState();
+}
+
+class _ProductPageState extends State<ProductPage> {
+  String selectedPdfPath = "";
+  late PDFViewController pdfViewController;
+  bool isPdfSelected = false;
+  String selectedPdfFileName = "";
+
+  TextEditingController numberOfPagesController = TextEditingController();
+  double totalPrice = 0.0;
+
+  Future<void> pickAndProcessPdf() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['pdf', 'docx', 'odt'],
+    );
+
+    if (result != null) {
+      String pdfPath = result.files.single.path!;
+      setState(() {
+        selectedPdfPath = pdfPath;
+        isPdfSelected = pdfPath.endsWith('.pdf') ||
+            pdfPath.endsWith('.docx') ||
+            pdfPath.endsWith('.odt');
+        selectedPdfFileName = selectedPdfPath.split('/').last;
+      });
+    }
+  }
+
+  void validateOrder() {
+    // double numberOfPages = double.tryParse(numberOfPagesController.text) ?? 0;
+    // double unitPrice = widget.prix;
+
+    // // Afficher les valeurs pour déboguer
+    // print("Nombre de pages: $numberOfPages");
+    // print("Prix unitaire: $unitPrice");
+
+    // double totalPrice = numberOfPages * unitPrice;
+
+    // // Afficher le prix total pour déboguer
+    // print("Prix total: $totalPrice");
+
+    // setState(() {});
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(name),
+        title: Text(widget.name),
       ),
       body: SingleChildScrollView(
         child: Center(
@@ -27,30 +77,113 @@ class ProductPage extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Image.network(
-                  image,
+                  widget.image,
                   fit: BoxFit.cover,
                   height: 200.0,
-                ),
-              ),
-              Text(
-                'Prix: $prix',
-                style: const TextStyle(
-                  fontSize: 18.0,
-                  fontWeight: FontWeight.bold,
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Text(
-                  description,
+                  widget.description,
                   style: const TextStyle(
                     fontSize: 16.0,
                   ),
                 ),
               ),
+              Center(
+                child: Column(
+                  children: <Widget>[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Expanded(
+                          child: Visibility(
+                            visible: isPdfSelected,
+                            child: ElevatedButton(
+                              onPressed: pickAndProcessPdf,
+                              child: const Text("Sélectionner un PDF"),
+                            ),
+                          ),
+                        ),
+                        if (isPdfSelected)
+                          Expanded(
+                            child: ElevatedButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        PdfViewPage(selectedPdfPath),
+                                  ),
+                                );
+                              },
+                              child: const Text("Voir le PDF"),
+                            ),
+                          ),
+                        if (!isPdfSelected)
+                          Expanded(
+                            child: ElevatedButton(
+                              onPressed: () {
+                                pickAndProcessPdf();
+                              },
+                              child: const Text("Sélectionner un PDF"),
+                            ),
+                          ),
+                      ],
+                    ),
+                    if (isPdfSelected)
+                      Text(
+                        "Fichier sélectionné : $selectedPdfFileName",
+                        style: const TextStyle(fontSize: 12),
+                      ),
+                  ],
+                ),
+              ),
+              TextField(
+                controller: numberOfPagesController,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  labelText: "Nombre de pages",
+                ),
+                onChanged: (value) {
+                  setState(() {
+                    double numberOfPages = double.tryParse(value) ?? 0;
+                    double unitPrice = widget.prix;
+                    totalPrice = numberOfPages * unitPrice;
+                  });
+                },
+              ),
+              Text(
+                "Prix total = ${totalPrice.toStringAsFixed(2)}€",
+                style: const TextStyle(fontSize: 16),
+              ),
+              ElevatedButton(
+                onPressed: validateOrder,
+                child: const Text("Valider la commande"),
+              ),
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class PdfViewPage extends StatelessWidget {
+  final String pdfPath;
+
+  PdfViewPage(this.pdfPath);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Visualisation du PDF"),
+      ),
+      body: PDFView(
+        filePath: pdfPath,
+        onViewCreated: (PDFViewController vc) {},
       ),
     );
   }

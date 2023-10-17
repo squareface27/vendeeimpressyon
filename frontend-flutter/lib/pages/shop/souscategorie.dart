@@ -6,7 +6,7 @@ import 'package:vendeeimpressyon/pages/shop/product.dart';
 
 class SousCategorie {
   final String name;
-  final String prix;
+  final double prix;
   final String image;
   final String description;
   final String categorieid;
@@ -43,8 +43,8 @@ class _SousCategoriePageState extends State<SousCategoriePage> {
       final categoryName = widget.categoryName;
 
       final filteredArticles = List<SousCategorie>.from(data.map((item) =>
-          SousCategorie(item['name'], item['unitprice'].toString(),
-              item['image'], item['categorieid'], item['description'])));
+          SousCategorie(item['name'], item['unitprice'], item['image'],
+              item['categorieid'], item['description'])));
 
       selectedCategoryArticles = filteredArticles
           .where((article) => article.categorieid == categoryName)
