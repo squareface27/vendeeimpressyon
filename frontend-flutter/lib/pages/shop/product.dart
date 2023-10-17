@@ -47,21 +47,7 @@ class _ProductPageState extends State<ProductPage> {
     }
   }
 
-  void validateOrder() {
-    // double numberOfPages = double.tryParse(numberOfPagesController.text) ?? 0;
-    // double unitPrice = widget.prix;
-
-    // // Afficher les valeurs pour déboguer
-    // print("Nombre de pages: $numberOfPages");
-    // print("Prix unitaire: $unitPrice");
-
-    // double totalPrice = numberOfPages * unitPrice;
-
-    // // Afficher le prix total pour déboguer
-    // print("Prix total: $totalPrice");
-
-    // setState(() {});
-  }
+  void validateOrder() {}
 
   @override
   Widget build(BuildContext context) {
