@@ -65,7 +65,7 @@ class _ProductPageState extends State<ProductPage> {
                 child: Image.network(
                   widget.image,
                   fit: BoxFit.cover,
-                  height: 200.0,
+                  height: 175.0,
                 ),
               ),
               Padding(
@@ -113,7 +113,7 @@ class _ProductPageState extends State<ProductPage> {
                               onPressed: () {
                                 pickAndProcessPdf();
                               },
-                              child: const Text("Sélectionner un PDF"),
+                              child: const Text("Sélectionner un fichier"),
                             ),
                           ),
                       ],

@@ -10,6 +10,8 @@ use App\Entity\CommandesEntity;
 use App\Entity\CategoriesEntity;
 use App\Entity\SaleshistoryEntity;
 use App\Entity\EtablissementScolaireEntity;
+use App\Entity\ProductOptionEntity;
+use App\Entity\CategoriesProductOptionEntity;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
@@ -41,6 +43,8 @@ class AdminDashboardController extends AbstractDashboardController
         yield MenuItem::section('Boutique');
         yield MenuItem::linkToCrud('Listes des catégories', 'fa fa-tags', CategoriesEntity::class);
         yield MenuItem::linkToCrud('Listes des articles', 'fa fa-shopping-bag', ArticlesEntity::class);
+        yield MenuItem::linkToCrud('Listes catégories d\'options', 'fa fa-list', CategoriesProductOptionEntity::class);
+        yield MenuItem::linkToCrud('Listes des options', 'fa fa-filter', ProductOptionEntity::class);
         yield MenuItem::linkToCrud('Listes des codes promos', 'fa fa-ticket', CodePromoEntity::class);
         yield MenuItem::linkToCrud('Listes des clients', 'fa fa-users', UserEntity::class);
         yield MenuItem::section('Paramètres de la boutique');
