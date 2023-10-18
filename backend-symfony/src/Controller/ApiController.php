@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 use App\Repository\CategoriesEntityRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Repository\ProductOptionEntityRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Repository\EtablissementScolaireEntityRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -181,6 +182,30 @@ class ApiController extends AbstractController
 
             $data[] = [
             'vacance' => $vacance,
+            ];
+        }
+        
+        return new JsonResponse($data);
+    }
+
+    // Sérialisation des souscatégories de la BDD vers JSON pour flutter
+    public function getProductOption(EntityManagerInterface $entityManager, ProductOptionEntityRepository $ProductOptionEntityRepository)
+    {
+        $productOptions = $ProductOptionEntityRepository->findAll();
+
+        $data = [];
+        foreach ($productOptions as $productOption) {
+            $name = $productOption->getNom();
+            $price = $productOption->getPrix();
+            $categorieOptionName = $productOption->getCategoryOptionName();
+            $categorieId = $productOption->getCategoryName();
+
+
+            $data[] = [
+            'name' => $name,
+            'prix' => $price,
+            'categorieOptionName' => $categorieOptionName,
+            'categorieid' => $categorieId,
             ];
         }
         
