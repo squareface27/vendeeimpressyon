@@ -1,26 +1,75 @@
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
+import 'package:vendeeimpressyon/pages/shop/souscategorie.dart';
 import 'dart:io';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class ProductPage extends StatefulWidget {
   final String name;
   final double prix;
   final String image;
   final String description;
+  final String categorieid;
 
   ProductPage({
     required this.name,
     required this.prix,
     required this.image,
     required this.description,
+    required this.categorieid,
   });
 
   @override
   _ProductPageState createState() => _ProductPageState();
 }
 
+class ProductOptions {
+  final String name;
+  final double prix;
+  final String categorieoptionname;
+  final String categorieid;
+
+  ProductOptions(
+      this.name, this.prix, this.categorieoptionname, this.categorieid);
+}
+
 class _ProductPageState extends State<ProductPage> {
+  List<ProductOptions> productoptions = [];
+
+  String? selectedOption;
+
+  final apiUrl = dotenv.env['API_URL_GET_PRODUCTOPTIONS']!;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchProductOptions();
+  }
+
+  Future<void> fetchProductOptions() async {
+    final response = await http.get(Uri.parse(apiUrl));
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      setState(() {
+        productoptions = List<ProductOptions>.from(data
+            .where((item) => item['categorieid'] == widget.categorieid)
+            .map((item) => ProductOptions(
+                "${item['name']} - +${item['prix']}€",
+                item['prix'].toDouble(),
+                item['categorieOptionName'],
+                item['categorieid'])));
+        productoptions.insert(
+            0,
+            ProductOptions(
+                'Sélectionner un type de reliure', 0.0, '', 'Rapport'));
+        selectedOption = productoptions[0].name;
+      });
+    }
+  }
+
   String selectedPdfPath = "";
   late PDFViewController pdfViewController;
   bool isPdfSelected = false;
@@ -48,6 +97,23 @@ class _ProductPageState extends State<ProductPage> {
   }
 
   void validateOrder() {}
+
+  Widget buildDropdown() {
+    return DropdownButton<String>(
+      value: selectedOption,
+      onChanged: (newOption) {
+        setState(() {
+          selectedOption = newOption;
+        });
+      },
+      items: productoptions
+          .map((option) => DropdownMenuItem<String>(
+                value: option.name,
+                child: Text(option.name),
+              ))
+          .toList(),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -134,16 +200,15 @@ class _ProductPageState extends State<ProductPage> {
                 ),
                 onChanged: (value) {
                   setState(() {
-                    double numberOfPages = double.tryParse(value) ?? 0;
+                    int numberOfPages = int.tryParse(value) ?? 0;
                     double unitPrice = widget.prix;
                     totalPrice = numberOfPages * unitPrice;
                   });
                 },
               ),
-              Text(
-                "Prix total = ${totalPrice.toStringAsFixed(2)}€",
-                style: const TextStyle(fontSize: 16),
-              ),
+              if (productoptions
+                  .any((option) => option.categorieoptionname == "Reliure"))
+                buildDropdown(),
               ElevatedButton(
                 onPressed: validateOrder,
                 child: const Text("Valider la commande"),
