@@ -40,6 +40,8 @@ class _ProductPageState extends State<ProductPage> {
   List<ProductOptions> productoptions = [];
 
   String? selectedOption;
+  String? selectedReliureOption;
+  String? selectedPremierePageOption;
 
   final apiUrl = dotenv.env['API_URL_GET_PRODUCTOPTIONS']!;
 
@@ -64,7 +66,13 @@ class _ProductPageState extends State<ProductPage> {
         productoptions.insert(
             0,
             ProductOptions(
-                'Sélectionner un type de reliure', 0.0, '', 'Rapport'));
+                'Sélectionner un type de reliure', 0.0, 'Reliure', 'Rapport'));
+
+        productoptions.insert(
+            1,
+            ProductOptions('Sélectionner un type de 1ère page', 0.0, '1erePage',
+                'Rapport'));
+
         selectedOption = productoptions[0].name;
       });
     }
@@ -78,6 +86,7 @@ class _ProductPageState extends State<ProductPage> {
   TextEditingController numberOfPagesController = TextEditingController();
   double totalPrice = 0.0;
   double reliurePrice = 0.0;
+  double premierepagePrice = 0.0;
 
   Future<void> pickAndProcessPdf() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -99,26 +108,71 @@ class _ProductPageState extends State<ProductPage> {
 
   void validateOrder() {}
 
-  Widget buildDropdown() {
-    return DropdownButton<String>(
-      value: selectedOption,
-      onChanged: (newOption) {
-        setState(() {
-          selectedOption = newOption;
-          final selectedProductOption = productoptions.firstWhere(
-              (option) => option.name == newOption,
-              orElse: () => ProductOptions("", 0.0, "", ""));
+  Widget buildDropdownReliure() {
+    final filteredOptions = productoptions
+        .where((option) =>
+            option.categorieoptionname == "Reliure" &&
+            option.categorieid == widget.categorieid)
+        .toList();
 
-          reliurePrice = selectedProductOption.prix;
-        });
-      },
-      items: productoptions
-          .map((option) => DropdownMenuItem<String>(
-                value: option.name,
-                child: Text(option.name),
-              ))
-          .toList(),
-    );
+    if (filteredOptions.isNotEmpty) {
+      return DropdownButton<String>(
+        value: selectedReliureOption ?? "Sélectionner un type de reliure",
+        onChanged: (newOption) {
+          setState(() {
+            selectedReliureOption = newOption;
+            final selectedProductOption = filteredOptions.firstWhere(
+              (option) => option.name == newOption,
+              orElse: () => ProductOptions("", 0.0, "", ""),
+            );
+
+            reliurePrice = selectedProductOption.prix;
+          });
+        },
+        items: filteredOptions
+            .map((option) => DropdownMenuItem<String>(
+                  value: option.name,
+                  child: Text(option.name),
+                ))
+            .toList(),
+      );
+    } else {
+      return const SizedBox.shrink();
+    }
+  }
+
+  Widget buildDropdownPremierePage() {
+    final filteredOptions = productoptions
+        .where((option) =>
+            option.categorieoptionname == "1erePage" &&
+            option.categorieid == widget.categorieid)
+        .toList();
+
+    if (filteredOptions.isNotEmpty) {
+      return DropdownButton<String>(
+        value:
+            selectedPremierePageOption ?? "Sélectionner un type de 1ère page",
+        onChanged: (newOption) {
+          setState(() {
+            selectedPremierePageOption = newOption;
+            final selectedProductOption = filteredOptions.firstWhere(
+              (option) => option.name == newOption,
+              orElse: () => ProductOptions("", 0.0, "", ""),
+            );
+
+            premierepagePrice = selectedProductOption.prix;
+          });
+        },
+        items: filteredOptions
+            .map((option) => DropdownMenuItem<String>(
+                  value: option.name,
+                  child: Text(option.name),
+                ))
+            .toList(),
+      );
+    } else {
+      return const SizedBox.shrink();
+    }
   }
 
   @override
@@ -214,9 +268,12 @@ class _ProductPageState extends State<ProductPage> {
               ),
               if (productoptions
                   .any((option) => option.categorieoptionname == "Reliure"))
-                buildDropdown(),
+                buildDropdownReliure(),
+              if (productoptions
+                  .any((option) => option.categorieoptionname == "1erePage"))
+                buildDropdownPremierePage(),
               Text(
-                "Prix total = ${(totalPrice + reliurePrice).toStringAsFixed(2)}€",
+                "Prix total = ${(totalPrice + reliurePrice + premierepagePrice).toStringAsFixed(2)}€",
                 style: const TextStyle(fontSize: 16),
               ),
               ElevatedButton(
