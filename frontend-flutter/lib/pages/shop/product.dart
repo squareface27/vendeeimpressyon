@@ -42,6 +42,7 @@ class _ProductPageState extends State<ProductPage> {
   String? selectedOption;
   String? selectedReliureOption;
   String? selectedPremierePageOption;
+  String? selectedFinitionOption;
 
   bool isRectoVerso = false;
 
@@ -75,6 +76,11 @@ class _ProductPageState extends State<ProductPage> {
             ProductOptions('Sélectionner un type de 1ère page', 0.0, '1erePage',
                 'Rapport'));
 
+        productoptions.insert(
+            2,
+            ProductOptions(
+                'Sélectionner un type de finition', 0.0, 'Finition', 'Cours'));
+
         selectedOption = productoptions[0].name;
       });
     }
@@ -89,6 +95,7 @@ class _ProductPageState extends State<ProductPage> {
   double totalPrice = 0.0;
   double reliurePrice = 0.0;
   double premierepagePrice = 0.0;
+  double finitionPrice = 0.0;
 
   Future<void> pickAndProcessPdf() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -163,6 +170,39 @@ class _ProductPageState extends State<ProductPage> {
             );
 
             premierepagePrice = selectedProductOption.prix;
+          });
+        },
+        items: filteredOptions
+            .map((option) => DropdownMenuItem<String>(
+                  value: option.name,
+                  child: Text(option.name),
+                ))
+            .toList(),
+      );
+    } else {
+      return const SizedBox.shrink();
+    }
+  }
+
+  Widget buildDropdownFinition() {
+    final filteredOptions = productoptions
+        .where((option) =>
+            option.categorieoptionname == "Finition" &&
+            option.categorieid == widget.categorieid)
+        .toList();
+
+    if (filteredOptions.isNotEmpty) {
+      return DropdownButton<String>(
+        value: selectedFinitionOption ?? "Sélectionner un type de finition",
+        onChanged: (newOption) {
+          setState(() {
+            selectedFinitionOption = newOption;
+            final selectedProductOption = filteredOptions.firstWhere(
+              (option) => option.name == newOption,
+              orElse: () => ProductOptions("", 0.0, "", ""),
+            );
+
+            reliurePrice = selectedProductOption.prix;
           });
         },
         items: filteredOptions
@@ -299,8 +339,11 @@ class _ProductPageState extends State<ProductPage> {
               if (productoptions
                   .any((option) => option.categorieoptionname == "1erePage"))
                 buildDropdownPremierePage(),
+              if (productoptions
+                  .any((option) => option.categorieoptionname == "Finition"))
+                buildDropdownFinition(),
               Text(
-                "Prix total = ${(totalPrice + reliurePrice + premierepagePrice).toStringAsFixed(2)}€",
+                "Prix total = ${(totalPrice + reliurePrice + premierepagePrice + finitionPrice).toStringAsFixed(2)}€",
                 style: const TextStyle(fontSize: 16),
               ),
               ElevatedButton(
