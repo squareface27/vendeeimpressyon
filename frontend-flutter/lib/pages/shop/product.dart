@@ -77,6 +77,7 @@ class _ProductPageState extends State<ProductPage> {
 
   TextEditingController numberOfPagesController = TextEditingController();
   double totalPrice = 0.0;
+  double reliurePrice = 0.0;
 
   Future<void> pickAndProcessPdf() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -104,6 +105,11 @@ class _ProductPageState extends State<ProductPage> {
       onChanged: (newOption) {
         setState(() {
           selectedOption = newOption;
+          final selectedProductOption = productoptions.firstWhere(
+              (option) => option.name == newOption,
+              orElse: () => ProductOptions("", 0.0, "", ""));
+
+          reliurePrice = selectedProductOption.prix;
         });
       },
       items: productoptions
@@ -209,6 +215,10 @@ class _ProductPageState extends State<ProductPage> {
               if (productoptions
                   .any((option) => option.categorieoptionname == "Reliure"))
                 buildDropdown(),
+              Text(
+                "Prix total = ${(totalPrice + reliurePrice).toStringAsFixed(2)}€",
+                style: const TextStyle(fontSize: 16),
+              ),
               ElevatedButton(
                 onPressed: validateOrder,
                 child: const Text("Valider la commande"),
