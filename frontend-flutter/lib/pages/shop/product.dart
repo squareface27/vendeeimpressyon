@@ -43,6 +43,8 @@ class _ProductPageState extends State<ProductPage> {
   String? selectedReliureOption;
   String? selectedPremierePageOption;
 
+  bool isRectoVerso = false;
+
   final apiUrl = dotenv.env['API_URL_GET_PRODUCTOPTIONS']!;
 
   @override
@@ -265,6 +267,31 @@ class _ProductPageState extends State<ProductPage> {
                     totalPrice = numberOfPages * unitPrice;
                   });
                 },
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  const Text("Recto"),
+                  Radio(
+                    value: false,
+                    groupValue: isRectoVerso,
+                    onChanged: (value) {
+                      setState(() {
+                        isRectoVerso = false;
+                      });
+                    },
+                  ),
+                  const Text("Recto/Verso"),
+                  Radio(
+                    value: true,
+                    groupValue: isRectoVerso,
+                    onChanged: (value) {
+                      setState(() {
+                        isRectoVerso = true;
+                      });
+                    },
+                  ),
+                ],
               ),
               if (productoptions
                   .any((option) => option.categorieoptionname == "Reliure"))
