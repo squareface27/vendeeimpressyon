@@ -46,6 +46,8 @@ class _ProductPageState extends State<ProductPage> {
 
   bool isRectoVerso = false;
 
+  bool isCouvertureCouleur = false;
+
   final apiUrl = dotenv.env['API_URL_GET_PRODUCTOPTIONS']!;
 
   @override
@@ -96,6 +98,10 @@ class _ProductPageState extends State<ProductPage> {
   double reliurePrice = 0.0;
   double premierepagePrice = 0.0;
   double finitionPrice = 0.0;
+
+  double couvertureCouleurPrice = 9.0;
+  double couvertureNoirEtBlancPrice = 7.0;
+  double couverturePrice = 0.0;
 
   Future<void> pickAndProcessPdf() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -215,6 +221,39 @@ class _ProductPageState extends State<ProductPage> {
     } else {
       return const SizedBox.shrink();
     }
+  }
+
+  Widget radioCouverture() {
+    if (!isCouvertureCouleur) {
+      couverturePrice = couvertureNoirEtBlancPrice;
+    }
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const Text("Couverture n/b 7€"),
+        Radio(
+          value: false,
+          groupValue: isCouvertureCouleur,
+          onChanged: (value) {
+            setState(() {
+              isCouvertureCouleur = false;
+              couverturePrice = couvertureNoirEtBlancPrice;
+            });
+          },
+        ),
+        const Text("Couverture couleur 9€"),
+        Radio(
+          value: true,
+          groupValue: isCouvertureCouleur,
+          onChanged: (value) {
+            setState(() {
+              isCouvertureCouleur = true;
+              couverturePrice = couvertureCouleurPrice;
+            });
+          },
+        ),
+      ],
+    );
   }
 
   @override
@@ -342,8 +381,11 @@ class _ProductPageState extends State<ProductPage> {
               if (productoptions
                   .any((option) => option.categorieoptionname == "Finition"))
                 buildDropdownFinition(),
+              if (productoptions
+                  .any((option) => option.categorieid == "Thèses & Mémoires"))
+                radioCouverture(),
               Text(
-                "Prix total = ${(totalPrice + reliurePrice + premierepagePrice + finitionPrice).toStringAsFixed(2)}€",
+                "Prix total = ${(totalPrice + reliurePrice + premierepagePrice + finitionPrice + couverturePrice).toStringAsFixed(2)}€",
                 style: const TextStyle(fontSize: 16),
               ),
               ElevatedButton(
