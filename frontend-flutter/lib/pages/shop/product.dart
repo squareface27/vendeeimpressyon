@@ -48,6 +48,8 @@ class _ProductPageState extends State<ProductPage> {
 
   bool isCouvertureCouleur = false;
 
+  bool isCouverturePapierIvoire = false;
+
   final apiUrl = dotenv.env['API_URL_GET_PRODUCTOPTIONS']!;
 
   @override
@@ -256,6 +258,35 @@ class _ProductPageState extends State<ProductPage> {
     );
   }
 
+  Widget radioPapierCouverture() {
+    const Text("Le papier de couverture est inclus");
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const Text("Papier blanc (défaut)"),
+        Radio(
+          value: false,
+          groupValue: isCouverturePapierIvoire,
+          onChanged: (value) {
+            setState(() {
+              isCouverturePapierIvoire = false;
+            });
+          },
+        ),
+        const Text("Papier Ivoire"),
+        Radio(
+          value: true,
+          groupValue: isCouverturePapierIvoire,
+          onChanged: (value) {
+            setState(() {
+              isCouverturePapierIvoire = true;
+            });
+          },
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -384,6 +415,9 @@ class _ProductPageState extends State<ProductPage> {
               if (productoptions
                   .any((option) => option.categorieid == "Thèses & Mémoires"))
                 radioCouverture(),
+              if (productoptions
+                  .any((option) => option.categorieid == "Thèses & Mémoires"))
+                radioPapierCouverture(),
               Text(
                 "Prix total = ${(totalPrice + reliurePrice + premierepagePrice + finitionPrice + couverturePrice).toStringAsFixed(2)}€",
                 style: const TextStyle(fontSize: 16),
