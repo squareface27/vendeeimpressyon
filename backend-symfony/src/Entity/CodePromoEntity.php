@@ -23,7 +23,7 @@ class CodePromoEntity
     private $code;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="integer")
      */
     private $montant;
 
@@ -44,12 +44,12 @@ class CodePromoEntity
         return $this;
     }
 
-    public function getMontant(): ?string
+    public function getMontant(): ?int
     {
         return $this->montant;
     }
 
-    public function setMontant(string $montant): self
+    public function setMontant(int $montant): self
     {
         $this->montant = $montant;
 

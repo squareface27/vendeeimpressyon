@@ -3,7 +3,9 @@
 namespace App\Controller\Admin;
 
 use App\Entity\CodePromoEntity;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
 
 class CodePromoEntityCrudController extends AbstractCrudController
 {
@@ -12,14 +14,12 @@ class CodePromoEntityCrudController extends AbstractCrudController
         return CodePromoEntity::class;
     }
 
-    /*
     public function configureFields(string $pageName): iterable
     {
         return [
-            IdField::new('id'),
-            TextField::new('title'),
-            TextEditorField::new('description'),
+            TextField::new('code'),
+            NumberField::new('montant')->setLabel('montant (%)'),
         ];
     }
-    */
+    
 }

@@ -12,6 +12,7 @@ use App\Repository\ArticlesEntityRepository;
 use App\Repository\SettingsEntityRepository;
 use Symfony\Component\HttpFoundation\Request;
 use App\Repository\CategoriesEntityRepository;
+use App\Repository\CodePromoEntityRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Repository\ProductOptionEntityRepository;
@@ -206,6 +207,26 @@ class ApiController extends AbstractController
             'prix' => $price,
             'categorieOptionName' => $categorieOptionName,
             'categorieid' => $categorieId,
+            ];
+        }
+        
+        return new JsonResponse($data);
+    }
+
+    // Sérialisation des souscatégories de la BDD vers JSON pour flutter
+    public function getCodePromo(EntityManagerInterface $entityManager, CodePromoEntityRepository $CodePromoEntityRepository)
+    {
+        $codepromos = $CodePromoEntityRepository->findAll();
+
+        $data = [];
+        foreach ($codepromos as $codepromo) {
+            $code = $codepromo->getCode();
+            $amount = $codepromo->getMontant();
+
+
+            $data[] = [
+            'code' => $code,
+            'montant' => $amount,
             ];
         }
         
