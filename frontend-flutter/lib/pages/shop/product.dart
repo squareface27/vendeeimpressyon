@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
-import 'package:vendeeimpressyon/pages/shop/souscategorie.dart';
-import 'dart:io';
+import 'package:vendeeimpressyon/pages/shop/resume.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -37,6 +36,11 @@ class ProductOptions {
 }
 
 class _ProductPageState extends State<ProductPage> {
+  bool isAllFieldsFilled() {
+    return (selectedPdfFileName.isNotEmpty &&
+        numberOfPagesController.text.isNotEmpty);
+  }
+
   List<ProductOptions> productoptions = [];
 
   String? selectedOption;
@@ -423,7 +427,33 @@ class _ProductPageState extends State<ProductPage> {
                 style: const TextStyle(fontSize: 16),
               ),
               ElevatedButton(
-                onPressed: validateOrder,
+                onPressed: isAllFieldsFilled()
+                    ? () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ResumePage(
+                              productName: widget.name,
+                              pdfFileName: selectedPdfFileName,
+                              numberOfPages:
+                                  int.tryParse(numberOfPagesController.text) ??
+                                      0,
+                              unitPrice: widget.prix,
+                              isRectoVerso: isRectoVerso,
+                              reliurePrice: reliurePrice,
+                              premierepagePrice: premierepagePrice,
+                              finitionPrice: finitionPrice,
+                              couverturePrice: couverturePrice,
+                              totalPrice: totalPrice +
+                                  reliurePrice +
+                                  premierepagePrice +
+                                  finitionPrice +
+                                  couverturePrice,
+                            ),
+                          ),
+                        );
+                      }
+                    : null,
                 child: const Text("Valider la commande"),
               ),
             ],
