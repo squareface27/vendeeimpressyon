@@ -7,6 +7,7 @@ class ResumePage extends StatefulWidget {
   final String productName;
   final String pdfFileName;
   final int numberOfPages;
+  final int numberOfCopies;
   final double unitPrice;
   final bool isRectoVerso;
   final double reliurePrice;
@@ -19,6 +20,7 @@ class ResumePage extends StatefulWidget {
     required this.productName,
     required this.pdfFileName,
     required this.numberOfPages,
+    required this.numberOfCopies,
     required this.unitPrice,
     required this.isRectoVerso,
     required this.reliurePrice,
@@ -191,6 +193,8 @@ class _ResumePageState extends State<ResumePage> {
                       Text("Type de Finition : ${widget.finitionPrice}€",
                           textAlign: TextAlign.center),
                       Text("Type de Couverture : ${widget.couverturePrice}€",
+                          textAlign: TextAlign.center),
+                      Text("Nombre d'exemplaires : ${widget.numberOfCopies}",
                           textAlign: TextAlign.center),
                     ],
                   ),

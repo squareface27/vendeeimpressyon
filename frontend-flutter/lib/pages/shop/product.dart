@@ -505,6 +505,9 @@ class _ProductPageState extends State<ProductPage> {
                               unitPrice: widget.prix,
                               isRectoVerso: isRectoVerso,
                               reliurePrice: reliurePrice,
+                              numberOfCopies:
+                                  int.tryParse(numberOfCopiesController.text) ??
+                                      0,
                               premierepagePrice: premierepagePrice,
                               finitionPrice: finitionPrice,
                               couverturePrice: couverturePrice,
