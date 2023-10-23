@@ -5,19 +5,18 @@ import 'package:vendeeimpressyon/pages/shop/resume.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter/services.dart';
 
 class ProductPage extends StatefulWidget {
   final String name;
   final double prix;
   final String image;
-  final String description;
   final String categorieid;
 
   ProductPage({
     required this.name,
     required this.prix,
     required this.image,
-    required this.description,
     required this.categorieid,
   });
 
@@ -100,6 +99,8 @@ class _ProductPageState extends State<ProductPage> {
   String selectedPdfFileName = "";
 
   TextEditingController numberOfPagesController = TextEditingController();
+  TextEditingController numberOfCopiesController = TextEditingController();
+
   double totalPrice = 0.0;
   double reliurePrice = 0.0;
   double premierepagePrice = 0.0;
@@ -307,16 +308,7 @@ class _ProductPageState extends State<ProductPage> {
                 child: Image.network(
                   widget.image,
                   fit: BoxFit.cover,
-                  height: 175.0,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Text(
-                  widget.description,
-                  style: const TextStyle(
-                    fontSize: 16.0,
-                  ),
+                  height: 160.0,
                 ),
               ),
               Center(
@@ -368,24 +360,47 @@ class _ProductPageState extends State<ProductPage> {
                   ],
                 ),
               ),
-              TextField(
-                controller: numberOfPagesController,
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
-                  labelText: "Nombre de pages",
-                ),
-                onChanged: (value) {
-                  setState(() {
-                    int numberOfPages = int.tryParse(value) ?? 0;
-                    double unitPrice = widget.prix;
-                    totalPrice = numberOfPages * unitPrice;
-                  });
-                },
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    "Nombre de pages : ",
+                    style: TextStyle(
+                      fontSize: 16,
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Flexible(
+                    child: SizedBox(
+                      width: 50,
+                      child: TextField(
+                        controller: numberOfPagesController,
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly
+                        ],
+                        decoration: const InputDecoration(
+                          hintText: "1",
+                        ),
+                        onChanged: (value) {
+                          setState(() {
+                            int numberOfPages = int.tryParse(value) ?? 0;
+                            double unitPrice = widget.prix;
+                            totalPrice = numberOfPages * unitPrice;
+                          });
+                        },
+                      ),
+                    ),
+                  ),
+                ],
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  const Text("Recto"),
+                  const Text("Recto",
+                      style: TextStyle(
+                        fontSize: 16,
+                      )),
                   Radio(
                     value: false,
                     groupValue: isRectoVerso,
@@ -395,7 +410,10 @@ class _ProductPageState extends State<ProductPage> {
                       });
                     },
                   ),
-                  const Text("Recto/Verso"),
+                  const Text("Recto/Verso",
+                      style: TextStyle(
+                        fontSize: 16,
+                      )),
                   Radio(
                     value: true,
                     groupValue: isRectoVerso,
@@ -422,6 +440,52 @@ class _ProductPageState extends State<ProductPage> {
               if (productoptions
                   .any((option) => option.categorieid == "Thèses & Mémoires"))
                 radioPapierCouverture(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    "Nombre d'exemplaires : ",
+                    style: TextStyle(
+                      fontSize: 16,
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Flexible(
+                    child: SizedBox(
+                      width: 50,
+                      child: TextField(
+                        controller: numberOfCopiesController,
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly
+                        ],
+                        decoration: const InputDecoration(
+                          hintText: "1",
+                        ),
+                        enabled: numberOfPagesController.text.isNotEmpty,
+                        onChanged: (value) {
+                          setState(() {
+                            int numberOfPages =
+                                int.tryParse(numberOfPagesController.text) ?? 0;
+                            int numberOfCopies = int.tryParse(value) ?? 0;
+                            double unitPrice = widget.prix;
+                            if (numberOfCopies < 1) {
+                              numberOfCopies = 1;
+                              numberOfCopiesController.text = "1";
+                            }
+                            totalPrice =
+                                numberOfPages * unitPrice * numberOfCopies;
+
+                            if (numberOfPagesController.text.isEmpty) {
+                              numberOfPages = 1;
+                            }
+                          });
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+              ),
               Text(
                 "Prix total = ${(totalPrice + reliurePrice + premierepagePrice + finitionPrice + couverturePrice).toStringAsFixed(2)}€",
                 style: const TextStyle(fontSize: 16),

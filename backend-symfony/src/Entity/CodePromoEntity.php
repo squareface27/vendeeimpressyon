@@ -27,6 +27,11 @@ class CodePromoEntity
      */
     private $montant;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $activation;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -52,6 +57,18 @@ class CodePromoEntity
     public function setMontant(int $montant): self
     {
         $this->montant = $montant;
+
+        return $this;
+    }
+
+    public function isActivation(): ?bool
+    {
+        return $this->activation;
+    }
+
+    public function setActivation(bool $activation): self
+    {
+        $this->activation = $activation;
 
         return $this;
     }

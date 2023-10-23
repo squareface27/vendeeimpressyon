@@ -12,6 +12,7 @@ use App\Entity\SaleshistoryEntity;
 use App\Entity\EtablissementScolaireEntity;
 use App\Entity\ProductOptionEntity;
 use App\Entity\CategoriesProductOptionEntity;
+use App\Entity\FraisEntity;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
@@ -49,5 +50,6 @@ class AdminDashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Listes des clients', 'fa fa-users', UserEntity::class);
         yield MenuItem::section('Paramètres de la boutique');
         yield MenuItem::linkToCrud('Paramètres', 'fa fa-cog', SettingsEntity::class);
+        yield MenuItem::linkToCrud('Liste des frais', 'fa fa-money', FraisEntity::class);
     }
 }

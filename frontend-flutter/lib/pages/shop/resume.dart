@@ -33,10 +33,14 @@ class ResumePage extends StatefulWidget {
 }
 
 class _ResumePageState extends State<ResumePage> {
+  Map<String, dynamic> fraisData = {};
+
   String errorMessage = "";
   String successMessage = "";
 
   double montantReduction = 0.0;
+  double reductionCommandeInternet = 0.0;
+  double fraisGestion = 0.0;
 
   bool isAllFieldsFilled() {
     return widget.numberOfPages > 0 && widget.pdfFileName.isNotEmpty;
@@ -52,11 +56,37 @@ class _ResumePageState extends State<ResumePage> {
   String currentPromoCode = "";
   double currentPromoAmount = 0;
 
+  Future<void> fetchFraisData() async {
+    final apiUrl = dotenv.env['API_URL_GET_FRAIS']!;
+    final response = await http.get(Uri.parse(apiUrl));
+
+    if (response.statusCode == 200) {
+      final List<dynamic> fraisList = json.decode(response.body);
+
+      for (var frais in fraisList) {
+        final String nom = frais['nom'];
+        final double montant = frais['montant'].toDouble();
+        fraisData[nom] = montant;
+      }
+
+      setState(() {
+        reductionCommandeInternet = (widget.totalPrice *
+                (fraisData["Réduction Commande Internet"] / 100))
+            .toDouble();
+        fraisGestion = fraisData["Frais de Gestion"].toDouble();
+        widget.totalPrice =
+            widget.totalPrice - reductionCommandeInternet + fraisGestion;
+      });
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     errorMessage = "";
     successMessage = "";
+
+    fetchFraisData();
   }
 
   void applyPromoCode() async {
@@ -135,68 +165,105 @@ class _ResumePageState extends State<ResumePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              Text(
-                "Produit : ${widget.productName}",
-                style:
-                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 16),
-              Text("Fichier PDF : ${widget.pdfFileName}",
-                  textAlign: TextAlign.center),
-              Text("Nombre de Pages : ${widget.numberOfPages} pages",
-                  textAlign: TextAlign.center),
-              Text("Recto/Verso : ${widget.isRectoVerso ? 'Oui' : 'Non'}",
-                  textAlign: TextAlign.center),
-              Text("Type de Reliure : ${widget.reliurePrice}€",
-                  textAlign: TextAlign.center),
-              Text("Type de 1ère Page : ${widget.premierepagePrice}€",
-                  textAlign: TextAlign.center),
-              Text("Type de Finition : ${widget.finitionPrice}€",
-                  textAlign: TextAlign.center),
-              Text("Type de Couverture : ${widget.couverturePrice}€",
-                  textAlign: TextAlign.center),
-              const SizedBox(height: 8),
-              Text(
-                "Code promo ${currentPromoCode.toUpperCase()} : ${(-montantReduction).toStringAsFixed(2)}€",
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 16),
-              Text(
-                "Prix Total : ${widget.totalPrice.toStringAsFixed(2)}€",
-                style:
-                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 16),
-              Row(
-                children: <Widget>[
-                  Expanded(
-                    child: TextField(
-                      controller: codePromoController,
-                      decoration:
-                          const InputDecoration(labelText: 'Code Promo'),
-                    ),
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    children: <Widget>[
+                      Text(
+                        "Produit : ${widget.productName}",
+                        style: const TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 16),
+                      Text("Fichier PDF : ${widget.pdfFileName}",
+                          textAlign: TextAlign.center),
+                      Text("Nombre de Pages : ${widget.numberOfPages} pages",
+                          textAlign: TextAlign.center),
+                      Text(
+                          "Recto/Verso : ${widget.isRectoVerso ? 'Oui' : 'Non'}",
+                          textAlign: TextAlign.center),
+                      Text("Type de Reliure : ${widget.reliurePrice}€",
+                          textAlign: TextAlign.center),
+                      Text("Type de 1ère Page : ${widget.premierepagePrice}€",
+                          textAlign: TextAlign.center),
+                      Text("Type de Finition : ${widget.finitionPrice}€",
+                          textAlign: TextAlign.center),
+                      Text("Type de Couverture : ${widget.couverturePrice}€",
+                          textAlign: TextAlign.center),
+                    ],
                   ),
-                  ElevatedButton(
-                    onPressed: applyPromoCode,
-                    child: const Text("Appliquer"),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    children: <Widget>[
+                      Text(
+                        "Code promo ${currentPromoCode.toUpperCase()} : ${(-montantReduction).toStringAsFixed(2)}€",
+                        textAlign: TextAlign.center,
+                      ),
+                      Row(
+                        children: <Widget>[
+                          Expanded(
+                            child: TextField(
+                              controller: codePromoController,
+                              decoration: const InputDecoration(
+                                  labelText: 'Code Promo'),
+                            ),
+                          ),
+                          ElevatedButton(
+                            onPressed: applyPromoCode,
+                            child: const Text("Appliquer"),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        errorMessage,
+                        style:
+                            const TextStyle(color: Colors.red, fontSize: 12.0),
+                      ),
+                      Text(
+                        successMessage,
+                        style: const TextStyle(
+                            color: Colors.green, fontSize: 12.0),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
-              const SizedBox(height: 8),
-              Text(
-                errorMessage,
-                style: const TextStyle(color: Colors.red, fontSize: 12.0),
-              ),
-              Text(
-                successMessage,
-                style: const TextStyle(color: Colors.green, fontSize: 12.0),
-              ),
-              const SizedBox(height: 32),
-              ElevatedButton(
-                onPressed: isAllFieldsFilled() ? () {} : null,
-                child: const Text("Commander et Payer"),
+              const SizedBox(height: 16),
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    children: <Widget>[
+                      Text(
+                        "Réduction Commande Internet (${fraisData["Réduction Commande Internet"]}%) : -${reductionCommandeInternet.toStringAsFixed(2)}€",
+                        textAlign: TextAlign.center,
+                      ),
+                      Text(
+                        "Frais de Gestion (${fraisData["Frais de Gestion"]}€)",
+                        textAlign: TextAlign.center,
+                      ),
+                      Text(
+                        "Prix Total : ${widget.totalPrice.toStringAsFixed(2)}€",
+                        style: const TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 16),
+                      ElevatedButton(
+                        onPressed: isAllFieldsFilled() ? () {} : null,
+                        child: const Text("Commander et Payer"),
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ],
           ),

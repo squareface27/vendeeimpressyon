@@ -109,7 +109,6 @@ class _SousCategoriePageState extends State<SousCategoriePage> {
                           name: article.name,
                           prix: article.prix,
                           image: article.image,
-                          description: article.description,
                           categorieid: article.categorieid,
                         ),
                       ),

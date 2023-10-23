@@ -18,6 +18,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Repository\ProductOptionEntityRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Repository\EtablissementScolaireEntityRepository;
+use App\Repository\FraisEntityRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
@@ -213,7 +214,7 @@ class ApiController extends AbstractController
         return new JsonResponse($data);
     }
 
-    // Sérialisation des souscatégories de la BDD vers JSON pour flutter
+    // Sérialisation des codes promo de la BDD vers JSON pour flutter
     public function getCodePromo(EntityManagerInterface $entityManager, CodePromoEntityRepository $CodePromoEntityRepository)
     {
         $codepromos = $CodePromoEntityRepository->findAll();
@@ -226,6 +227,28 @@ class ApiController extends AbstractController
 
             $data[] = [
             'code' => $code,
+            'montant' => $amount,
+            ];
+        }
+        
+        return new JsonResponse($data);
+    }
+
+    // Sérialisation des frais de la BDD vers JSON pour flutter
+    public function getFrais(EntityManagerInterface $entityManager, FraisEntityRepository $fraisEntityRepository)
+    {
+        $frais = $fraisEntityRepository->findAll();
+
+        $data = [];
+        foreach ($frais as $frai) {
+            $id = $frai->getId();
+            $nom = $frai->getNom();
+            $amount = $frai->getMontant();
+
+
+            $data[] = [
+            'id' => $id,
+            'nom' => $nom,
             'montant' => $amount,
             ];
         }
