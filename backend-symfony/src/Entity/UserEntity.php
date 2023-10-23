@@ -21,7 +21,7 @@ class UserEntity implements UserInterface
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $mail;
+    public $mail;
 
     /**
      * @ORM\Column(type="string", length=255)
