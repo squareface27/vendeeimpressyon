@@ -46,6 +46,7 @@ class _ProductPageState extends State<ProductPage> {
   String? selectedReliureOption;
   String? selectedPremierePageOption;
   String? selectedFinitionOption;
+  String? selectedCouleurCouvertureOption;
 
   bool isRectoVerso = false;
 
@@ -80,11 +81,16 @@ class _ProductPageState extends State<ProductPage> {
 
         productoptions.insert(
             1,
+            ProductOptions('Sélectionner une couleur de couverture', 0.0,
+                'CouleurCouverture', 'Rapport'));
+
+        productoptions.insert(
+            2,
             ProductOptions('Sélectionner un type de 1ère page', 0.0, '1erePage',
                 'Rapport'));
 
         productoptions.insert(
-            2,
+            3,
             ProductOptions(
                 'Sélectionner un type de finition', 0.0, 'Finition', 'Cours'));
 
@@ -105,6 +111,7 @@ class _ProductPageState extends State<ProductPage> {
   double reliurePrice = 0.0;
   double premierepagePrice = 0.0;
   double finitionPrice = 0.0;
+  double couleurCouverturePrice = 0.0;
 
   double couvertureCouleurPrice = 9.0;
   double couvertureNoirEtBlancPrice = 7.0;
@@ -215,7 +222,41 @@ class _ProductPageState extends State<ProductPage> {
               orElse: () => ProductOptions("", 0.0, "", ""),
             );
 
-            reliurePrice = selectedProductOption.prix;
+            finitionPrice = selectedProductOption.prix;
+          });
+        },
+        items: filteredOptions
+            .map((option) => DropdownMenuItem<String>(
+                  value: option.name,
+                  child: Text(option.name),
+                ))
+            .toList(),
+      );
+    } else {
+      return const SizedBox.shrink();
+    }
+  }
+
+  Widget buildDropdownCouleurCouverture() {
+    final filteredOptions = productoptions
+        .where((option) =>
+            option.categorieoptionname == "CouleurCouverture" &&
+            option.categorieid == widget.categorieid)
+        .toList();
+
+    if (filteredOptions.isNotEmpty) {
+      return DropdownButton<String>(
+        value: selectedCouleurCouvertureOption ??
+            "Sélectionner une couleur de couverture",
+        onChanged: (newOption) {
+          setState(() {
+            selectedCouleurCouvertureOption = newOption;
+            final selectedProductOption = filteredOptions.firstWhere(
+              (option) => option.name == newOption,
+              orElse: () => ProductOptions("", 0.0, "", ""),
+            );
+
+            couleurCouverturePrice = selectedProductOption.prix;
           });
         },
         items: filteredOptions
@@ -428,6 +469,7 @@ class _ProductPageState extends State<ProductPage> {
               if (productoptions
                   .any((option) => option.categorieoptionname == "Reliure"))
                 buildDropdownReliure(),
+              buildDropdownCouleurCouverture(),
               if (productoptions
                   .any((option) => option.categorieoptionname == "1erePage"))
                 buildDropdownPremierePage(),
