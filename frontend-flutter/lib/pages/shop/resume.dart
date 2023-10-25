@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'dart:convert';
 import 'package:flutter_stripe/flutter_stripe.dart' hide Card;
+import 'package:intl/intl.dart';
 
 class ResumePage extends StatefulWidget {
   final String productName;
@@ -53,7 +54,9 @@ class _ResumePageState extends State<ResumePage> {
   }
 
   final apiUrl = dotenv.env['API_URL_GET_CODEPROMO']!;
-  final StripeBearerToken = dotenv.env['STRIPE_BEARER_TOKEN']!;
+  final stripeBearerToken = dotenv.env['STRIPE_BEARER_TOKEN']!;
+
+  final apiUrlCommandeInfos = dotenv.env['API_URL_POST_COMMANDE_INFOS']!;
 
   TextEditingController codePromoController = TextEditingController();
   String promoCode = "";
@@ -313,8 +316,28 @@ class _ResumePageState extends State<ResumePage> {
 
   displayPaymentSheet() async {
     try {
-      await Stripe.instance.presentPaymentSheet().then((value) {
-        print("Payment Successfully");
+      await Stripe.instance.presentPaymentSheet().then((value) async {
+        final productName = widget.productName;
+        final totalPrice = widget.totalPrice;
+        final dateTimeNow =
+            DateFormat('dd-MM-yyyy HH:mm:ss').format(DateTime.now());
+
+        final paymentInfo = {
+          'productName': productName,
+          'totalPrice': totalPrice,
+          'date': dateTimeNow,
+        };
+
+        final jsonData = json.encode(paymentInfo);
+
+        final response = await http.post(Uri.parse(apiUrlCommandeInfos),
+            headers: {'Content-Type': 'application/json'}, body: jsonData);
+
+        if (response.statusCode == 200) {
+          print('Données envoyées avec succès à votre API.');
+        } else {
+          print('Échec de l\'envoi des données à votre API.');
+        }
       });
     } catch (e) {
       print('$e');
@@ -331,7 +354,7 @@ class _ResumePageState extends State<ResumePage> {
       var response = await http.post(
         Uri.parse('https://api.stripe.com/v1/payment_intents'),
         headers: {
-          'Authorization': 'Bearer $StripeBearerToken',
+          'Authorization': 'Bearer $stripeBearerToken',
           'Content-Type': 'application/x-www-form-urlencoded'
         },
         body: body,

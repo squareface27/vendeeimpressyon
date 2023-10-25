@@ -2,23 +2,28 @@
 
 namespace App\Controller;
 
+use DateTime;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 use App\Entity\UserEntity;
+use Psr\Log\LoggerInterface;
 use App\Entity\ArticlesEntity;
 use App\Services\ApiAuthService;
 use App\Repository\UserEntityRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\FraisEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use App\Repository\ArticlesEntityRepository;
 use App\Repository\SettingsEntityRepository;
+use Symfony\Component\HttpClient\HttpClient;
+use App\Repository\CodePromoEntityRepository;
 use Symfony\Component\HttpFoundation\Request;
 use App\Repository\CategoriesEntityRepository;
-use App\Repository\CodePromoEntityRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Repository\ProductOptionEntityRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Repository\EtablissementScolaireEntityRepository;
-use App\Repository\FraisEntityRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
@@ -26,10 +31,12 @@ class ApiController extends AbstractController
 {
 
     private $entityManager;
+    private $logger;
 
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $registry, LoggerInterface $logger)
     {
         $this->entityManager = $registry->getManager();
+        $this->logger = $logger;
     }
 
     // Désérialisation du JSON flutter pour créer un utilisateur
@@ -256,4 +263,123 @@ class ApiController extends AbstractController
         return new JsonResponse($data);
     }
 
+    
+
+    // Création du PDF des factures
+
+    public function generateInvoice(Request $request)
+{
+    $date = new DateTime();
+    $annee = $date->format('Y');
+    $mois = $date->format('m');
+
+
+    $numeroFacture = "FACTURE N° $annee-$mois";
+
+    $rawData = $request->getContent();
+    $data = json_decode($rawData, true);
+
+    $produit = $data['productName'];
+    $price = $data['totalPrice'];
+    $date = $data['date'];
+
+    $montantBrut = number_format($price / (1 + 0.20), 2);
+
+    $options = new Options();
+    $options->set('isHtml5ParserEnabled', true);
+    $options->set('isPhpEnabled', true);
+
+    $dompdf = new Dompdf($options);
+
+    $logoPath = 'http://localhost/vendeeimpressyon/backend-symfony/public/uploads/images/logo/logo.png';
+    $logoData = base64_encode(file_get_contents($logoPath));
+
+
+    $html = '<html>
+    <head>
+        <style>
+            table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+            th, td {
+                border: 1px solid #000;
+                padding: 8px;
+            }
+
+            /* Style pour les en-têtes de tableau */
+            th {
+                background-color: #f2f2f2;
+            }
+
+            footer {
+                position: absolute;
+                bottom: 0;
+                width: 100%;
+            }
+
+        </style>
+    </head>
+    <body>
+        <div class="header">
+        <img src="data:image/png;base64,' . $logoData . '" style="float:right" alt="Logo">
+        <h5>EURL GRAPHINET - VENDEE IMPRESS\'YON</h5>
+        <p style=font-size:15px;>62 bis rue Maréchal Ney
+        <br>85000 LA ROCHE SUR YON</p>
+        </div>
+        <br>
+        <div class="content">
+            <h5>' . $numeroFacture . '</h5>
+            <p>Date : ' . $date . '</p>
+
+            <h4>Détails de la commande :</h4>
+            <table>
+                <tr>
+                    <th>Produit</th>
+                    <th>Prix unitaire HT</th>
+                    <th>Quantité</th>
+                    <th>Total</th>
+                </tr>
+                <tr>
+                    <td>' . $produit . '</td>
+                    <td>' . number_format($montantBrut, 2) . '€</td>
+                    <td>1</td>
+                    <td>' . number_format($montantBrut * 1.2, 2) . ' €</td>
+                </tr>
+                <tr>
+                    <td colspan="3">Sous-total HT</td>
+                    <td>' . number_format($montantBrut, 2) . '€</td>
+                </tr>
+                <tr>
+                    <td colspan="3">TVA (20%)</td>
+                    <td>' . number_format($montantBrut * 0.2, 2) . ' €</td>
+                </tr>
+                <tr>
+                    <td colspan="3"><strong>Total</strong></td>
+                    <td><strong>' . number_format($montantBrut * 1.2, 2) . ' €</strong></td>
+                </tr>
+            </table>
+        </div>
+        <footer class="footer">
+            <hr>
+            <p style=font-size:15px;>
+                EURL GRAPHINET - VENDEE IMPRESS\'YON - EURL au capital de 45000€ - 488 506 494 RCS la Roche Sur Yon - N°TVA: FR38488506494 - APE : 8219Z
+            </p>
+            <p style=font-size:13px;>Web : www.vendee-impressyon.fr - Email : vendee.impressyon@gmail.com - Tél : 02 51 98 08 58</p>
+        </footer>
+    </body>
+</html>';
+
+    $dompdf->loadHtml($html);
+
+    $dompdf->setPaper('A4', 'portrait');
+    $dompdf->render();
+
+    $output = $dompdf->output();
+    file_put_contents($numeroFacture, $output);
+
+    return new JsonResponse(['message' => 'Facture générée avec succès']);
+
 }
+}
+
