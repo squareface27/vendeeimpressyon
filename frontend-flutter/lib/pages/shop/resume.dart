@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'dart:convert';
+import 'package:flutter_stripe/flutter_stripe.dart' hide Card;
 
 class ResumePage extends StatefulWidget {
   final String productName;
@@ -14,6 +15,7 @@ class ResumePage extends StatefulWidget {
   final double premierepagePrice;
   final double finitionPrice;
   final double couverturePrice;
+  final double couleurCouverturePrice;
   double totalPrice;
 
   ResumePage({
@@ -27,6 +29,7 @@ class ResumePage extends StatefulWidget {
     required this.premierepagePrice,
     required this.finitionPrice,
     required this.couverturePrice,
+    required this.couleurCouverturePrice,
     required this.totalPrice,
   });
 
@@ -35,6 +38,7 @@ class ResumePage extends StatefulWidget {
 }
 
 class _ResumePageState extends State<ResumePage> {
+  Map<String, dynamic>? paymentIntent;
   Map<String, dynamic> fraisData = {};
 
   String errorMessage = "";
@@ -49,6 +53,7 @@ class _ResumePageState extends State<ResumePage> {
   }
 
   final apiUrl = dotenv.env['API_URL_GET_CODEPROMO']!;
+  final StripeBearerToken = dotenv.env['STRIPE_BEARER_TOKEN']!;
 
   TextEditingController codePromoController = TextEditingController();
   String promoCode = "";
@@ -194,6 +199,9 @@ class _ResumePageState extends State<ResumePage> {
                           textAlign: TextAlign.center),
                       Text("Type de Couverture : ${widget.couverturePrice}€",
                           textAlign: TextAlign.center),
+                      Text(
+                          "Couleur de Couverture : ${widget.couleurCouverturePrice}€",
+                          textAlign: TextAlign.center),
                       Text("Nombre d'exemplaires : ${widget.numberOfCopies}",
                           textAlign: TextAlign.center),
                     ],
@@ -262,7 +270,11 @@ class _ResumePageState extends State<ResumePage> {
                       ),
                       const SizedBox(height: 16),
                       ElevatedButton(
-                        onPressed: isAllFieldsFilled() ? () {} : null,
+                        onPressed: isAllFieldsFilled()
+                            ? () async {
+                                await makePayment();
+                              }
+                            : null,
                         child: const Text("Commander et Payer"),
                       ),
                     ],
@@ -274,5 +286,59 @@ class _ResumePageState extends State<ResumePage> {
         ),
       ),
     );
+  }
+
+  Future<void> makePayment() async {
+    try {
+      final totalPriceString = (widget.totalPrice * 100).toStringAsFixed(0);
+      paymentIntent = await createPaymentIntent(totalPriceString, 'EUR');
+
+      var gpay = const PaymentSheetGooglePay(
+          merchantCountryCode: "FR", currencyCode: "EUR", testEnv: true);
+
+      await Stripe.instance
+          .initPaymentSheet(
+              paymentSheetParameters: SetupPaymentSheetParameters(
+                  paymentIntentClientSecret: paymentIntent!['client_secret'],
+                  style: ThemeMode.dark,
+                  merchantDisplayName: 'Vendée Impress\'Yon',
+                  googlePay: gpay))
+          .then((value) {});
+
+      displayPaymentSheet();
+    } catch (err) {
+      print(err);
+    }
+  }
+
+  displayPaymentSheet() async {
+    try {
+      await Stripe.instance.presentPaymentSheet().then((value) {
+        print("Payment Successfully");
+      });
+    } catch (e) {
+      print('$e');
+    }
+  }
+
+  createPaymentIntent(String amount, String currency) async {
+    try {
+      Map<String, dynamic> body = {
+        'amount': amount,
+        'currency': currency,
+      };
+
+      var response = await http.post(
+        Uri.parse('https://api.stripe.com/v1/payment_intents'),
+        headers: {
+          'Authorization': 'Bearer $StripeBearerToken',
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: body,
+      );
+      return json.decode(response.body);
+    } catch (err) {
+      throw Exception(err.toString());
+    }
   }
 }

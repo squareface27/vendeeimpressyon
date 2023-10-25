@@ -5,10 +5,15 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:flutter_stripe/flutter_stripe.dart' hide Card;
 
 final apiUrl = dotenv.env['API_URL_SETTINGS']!;
 
 Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  Stripe.publishableKey =
+      "pk_test_51NFvVqBY9nPHX0AINcfU2vn2a8mVUuMZgdgcwinbWY7nAziUVWO7fnvR60XSNzbkXLKordJszyz8cxmD8gFuJskE00y8Cadp27";
   await dotenv.load();
   final response = await http.get(Uri.parse(apiUrl));
 

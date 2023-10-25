@@ -553,6 +553,7 @@ class _ProductPageState extends State<ProductPage> {
                               premierepagePrice: premierepagePrice,
                               finitionPrice: finitionPrice,
                               couverturePrice: couverturePrice,
+                              couleurCouverturePrice: couleurCouverturePrice,
                               totalPrice: totalPrice +
                                   reliurePrice +
                                   premierepagePrice +
