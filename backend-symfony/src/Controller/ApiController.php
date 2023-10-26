@@ -274,16 +274,24 @@ class ApiController extends AbstractController
     $mois = $date->format('m');
 
 
-    $numeroFacture = "FACTURE N° $annee-$mois";
 
     $rawData = $request->getContent();
     $data = json_decode($rawData, true);
 
+    $id = $data['id'];
     $produit = $data['productName'];
     $price = $data['totalPrice'];
     $date = $data['date'];
+    $quantite = $data['quantite'];
+
+    $this->logger->info('Données reçues depuis Flutter : ' . $rawData);
+
+    $numeroFacture = "FACTURE N° $annee-$mois-$id";
+    $numeroFactureFile = "FACTURE N° $annee-$mois-$id.pdf";
 
     $montantBrut = number_format($price / (1 + 0.20), 2);
+
+    $prixUnitaire = number_format($montantBrut / $quantite, 2);
 
     $options = new Options();
     $options->set('isHtml5ParserEnabled', true);
@@ -342,8 +350,8 @@ class ApiController extends AbstractController
                 </tr>
                 <tr>
                     <td>' . $produit . '</td>
-                    <td>' . number_format($montantBrut, 2) . '€</td>
-                    <td>1</td>
+                    <td>' . number_format($prixUnitaire, 2) . '€</td>
+                    <td>' . $quantite . '</td>
                     <td>' . number_format($montantBrut * 1.2, 2) . ' €</td>
                 </tr>
                 <tr>
@@ -376,7 +384,7 @@ class ApiController extends AbstractController
     $dompdf->render();
 
     $output = $dompdf->output();
-    file_put_contents($numeroFacture, $output);
+    file_put_contents($numeroFactureFile, $output);
 
     return new JsonResponse(['message' => 'Facture générée avec succès']);
 
