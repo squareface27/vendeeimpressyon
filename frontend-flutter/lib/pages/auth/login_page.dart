@@ -110,13 +110,13 @@ class _LoginPageState extends State<LoginPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const SizedBox(height: 0),
+                const SizedBox(height: 50),
 
                 // logo
                 Image.asset(
                   'lib/assets/images/logo.png',
                   width: 300,
-                  height: 300,
+                  height: 200,
                 ),
 
                 const SizedBox(height: 0),
@@ -185,7 +185,7 @@ class _LoginPageState extends State<LoginPage> {
                   ],
                 ),
 
-                const SizedBox(height: 50),
+                const SizedBox(height: 75),
 
                 // or continue with
                 Padding(

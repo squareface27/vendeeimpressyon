@@ -23,6 +23,7 @@ class Etablissement {
 
 class _RegisterPageState extends State<RegisterPage> {
   // text editing controllers
+  final pseudoController = TextEditingController();
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
   final passwordConfirmController = TextEditingController();
@@ -102,6 +103,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   // sign user in method
   void registerUserIn(BuildContext context) async {
+    final String pseudo = pseudoController.text;
     final String mail = usernameController.text;
     final String password = passwordController.text;
     final String passwordconfirm = passwordConfirmController.text;
@@ -133,6 +135,7 @@ class _RegisterPageState extends State<RegisterPage> {
     final response = await http.post(
       Uri.parse(apiUrlRegister),
       body: {
+        'pseudo': pseudo,
         'mail': mail,
         'password': password,
         'confirm_password': passwordconfirm,
@@ -166,10 +169,17 @@ class _RegisterPageState extends State<RegisterPage> {
                 Image.asset(
                   'lib/assets/images/logo.png',
                   width: 300,
-                  height: 300,
+                  height: 200,
                 ),
 
-                const SizedBox(height: 5),
+                // pseudo textfield
+                MyTextField(
+                  controller: pseudoController,
+                  hintText: 'Nom d\'utilisateur',
+                  obscureText: false,
+                ),
+
+                const SizedBox(height: 10),
 
                 // email textfield
                 MyTextField(

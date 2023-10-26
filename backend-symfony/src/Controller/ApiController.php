@@ -46,6 +46,7 @@ class ApiController extends AbstractController
     public function createUser(Request $request, UserPasswordHasherInterface $passwordHasher)
     {
 
+        $pseudo = $request->request->get('pseudo');
         $username = $request->request->get('mail');
         $password = $request->request->get('password');
         $confirmPassword = $request->request->get('confirm_password');
@@ -65,6 +66,7 @@ class ApiController extends AbstractController
         }
 
         $user = new UserEntity();
+        $user->setPseudo($pseudo);
         $user->setMail($username);
         $user->setRole('ROLE_USER');
         $user->setetablissement($selectedEtablissement);
@@ -269,7 +271,7 @@ class ApiController extends AbstractController
 
     // Création du PDF des factures
 
-    public function generateInvoice(Request $request, MailerInterface $mailer)
+    public function generateInvoice(Request $request, MailerInterface $mailer, EntityManagerInterface $entityManager)
 {
     $date = new DateTime();
     $annee = $date->format('Y');
@@ -286,12 +288,29 @@ class ApiController extends AbstractController
     $date = $data['date'];
     $quantite = $data['quantite'];
     $email = $data['email'];
+    $reliureName = $data['reliureName'];
+    $couleurCouvertureName = $data['couleurCouvertureName'];
+    $premierpageName = $data['premierepageName'];
+    $finitionName = $data['finitionName'];
+    $couvertureName = $data['couvertureName'];
+    $couverturePapierName = $data['couverturePapierName'];
+    $nombrePage = $data['nombrePage'];
 
-    $this->logger->info('Données reçues depuis Flutter : ' . $rawData);
-    $this->logger->info('Email : ' . $email);
+    $userRepository = $entityManager->getRepository(UserEntity::class);
+
+    $query = $userRepository->createQueryBuilder('u')
+        ->select('u.pseudo')
+        ->where('u.mail = :mail')
+        ->setParameter('mail', $email)
+        ->getQuery();
+
+    $result = $query->getOneOrNullResult();
+    $pseudo = $result['pseudo'];
 
     $numeroFacture = "FACTURE N° $annee-$mois-$id";
+    $numeroCommande = "COMMANDE N° $annee-$mois-$id";
     $numeroFactureFile = "FACTURE N° $annee-$mois-$id.pdf";
+    $numeroCommandeFile = "COMMANDE N° $annee-$mois-$id.pdf";
 
     $montantBrut = number_format($price / (1 + 0.20), 2);
 
@@ -302,12 +321,13 @@ class ApiController extends AbstractController
     $options->set('isPhpEnabled', true);
 
     $dompdf = new Dompdf($options);
+    $dompdfForCommande = new Dompdf($options);
 
     $logoPath = 'http://localhost/vendeeimpressyon/backend-symfony/public/uploads/images/logo/logo.png';
     $logoData = base64_encode(file_get_contents($logoPath));
 
 
-    $html = '<html>
+    $htmlFacture = '<html>
     <head>
         <style>
             table {
@@ -382,7 +402,7 @@ class ApiController extends AbstractController
     </body>
 </html>';
 
-    $dompdf->loadHtml($html);
+    $dompdf->loadHtml($htmlFacture);
 
     $dompdf->setPaper('A4', 'portrait');
     $dompdf->render();
@@ -390,14 +410,108 @@ class ApiController extends AbstractController
     $output = $dompdf->output();
     file_put_contents($numeroFactureFile, $output);
 
-    $email = (new Email())
+    $htmlBonDeCommande = '<html>
+    <head>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #000;
+            padding: 8px;
+        }
+
+        /* Style pour les en-têtes de tableau */
+        th {
+            background-color: #f2f2f2;
+        }
+
+        footer {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="data:image/png;base64,' . $logoData . '" style="float:right" alt="Logo">
+        <h5>EURL GRAPHINET - VENDEE IMPRESS\'YON</h5>
+        <p style="font-size:15px;">62 bis rue Maréchal Ney
+            <br>85000 LA ROCHE SUR YON</p>
+    </div>
+    <br>
+    <div class="content">
+        <p>Date : ' . $date . '</p>
+        <p>Client : ' . $pseudo . '</p>
+
+        <h4> ' . $numeroCommande . '</h4>
+        <hr>
+        <br>
+        <h3>Produit : ' . $produit . '</h3>
+        
+        <h4>Options :</h4>
+        <ul>';
+
+        $htmlBonDeCommande .= '<li>Nombre de pages : ' . $nombrePage .' </li>';
+        $htmlBonDeCommande .= '<li>Nombre d\'exemplaires : ' . $quantite .' </li>';
+
+if (!empty($reliureName)) {
+    $htmlBonDeCommande .= '<li>Reliure : ' . $reliureName . '</li>';
+}
+if (!empty($couleurCouvertureName)) {
+    $htmlBonDeCommande .= '<li>Couleur de la couverture : ' . $couleurCouvertureName . '</li>';
+}
+if (!empty($premierpageName)) {
+    $htmlBonDeCommande .= '<li>Type de 1ère page : ' . $premierpageName . '</li>';
+}
+if (!empty($finitionName)) {
+    $htmlBonDeCommande .= '<li>Type de finition : ' . $finitionName . '</li>';
+}
+if (!empty($couvertureName)) {
+    $htmlBonDeCommande .= '<li>Type de couverture : ' . $couvertureName . '</li>';
+}
+if (!empty($couverturePapierName)) {
+    $htmlBonDeCommande .= '<li>Type de papier de couverture : ' . $couverturePapierName . '</li>';
+}
+
+$htmlBonDeCommande .= '</ul>
+    </div>
+    <footer class="footer">
+        <hr>
+        <p style="font-size:15px;">
+            EURL GRAPHINET - VENDEE IMPRESS\'YON - EURL au capital de 45000€ - 488 506 494 RCS La Roche Sur Yon - N°TVA: FR38488506494 - APE : 8219Z
+        </p>
+        <p style="font-size:13px;">Web : www.vendee-impressyon.fr - Email : vendee.impressyon@gmail.com - Tél : 02 51 98 08 58</p>
+    </footer>
+</body>
+</html>';
+
+        $dompdfForCommande->loadHtml($htmlBonDeCommande);
+        $dompdfForCommande->render();
+        $commandeOutput = $dompdfForCommande->output();
+        file_put_contents($numeroCommandeFile, $commandeOutput);
+
+
+    $emailClient = (new Email())
         ->from('vendee.impressyon@gmail.com')
         ->to($email)
         ->subject('Facture Vendée Impress\'Yon')
         ->text('Merci de trouver en pièce jointe la facture de votre achat.')
         ->attachFromPath($numeroFactureFile);
 
-    $mailer->send($email);
+    $emailReceptionCommande = (new Email())
+        ->from('vendee.impressyon@gmail.com')
+        ->to('etudiant.impressyon@gmail.com')
+        ->subject('Nouvelle Commande de ' . $pseudo)
+        ->text('Merci de trouver en pièce jointe la facture de votre achat.')
+        ->attachFromPath($numeroCommandeFile)
+        ->attachFromPath($numeroFactureFile);
+
+    $mailer->send($emailClient);
+    $mailer->send($emailReceptionCommande);
 
     return new JsonResponse(['message' => 'Facture générée et envoyée avec succès']);
 

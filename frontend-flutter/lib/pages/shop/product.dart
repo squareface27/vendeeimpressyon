@@ -49,6 +49,8 @@ class _ProductPageState extends State<ProductPage> {
   String? selectedPremierePageOption;
   String? selectedFinitionOption;
   String? selectedCouleurCouvertureOption;
+  String couvertureName = "Papier blanc";
+  String couverturePapierName = "Noir et blanc";
 
   bool isRectoVerso = false;
 
@@ -115,6 +117,11 @@ class _ProductPageState extends State<ProductPage> {
   double finitionPrice = 0.0;
   double couleurCouverturePrice = 0.0;
 
+  String reliureName = "";
+  String couleurCouvertureName = "";
+  String premierepageName = "";
+  String finitionName = "";
+
   double couvertureCouleurPrice = 9.0;
   double couvertureNoirEtBlancPrice = 7.0;
   double couverturePrice = 0.0;
@@ -157,6 +164,7 @@ class _ProductPageState extends State<ProductPage> {
               orElse: () => ProductOptions("", 0.0, "", ""),
             );
 
+            reliureName = selectedProductOption.name;
             reliurePrice = selectedProductOption.prix;
           });
         },
@@ -191,6 +199,7 @@ class _ProductPageState extends State<ProductPage> {
               orElse: () => ProductOptions("", 0.0, "", ""),
             );
 
+            premierepageName = selectedProductOption.name;
             premierepagePrice = selectedProductOption.prix;
           });
         },
@@ -224,6 +233,7 @@ class _ProductPageState extends State<ProductPage> {
               orElse: () => ProductOptions("", 0.0, "", ""),
             );
 
+            finitionName = selectedProductOption.name;
             finitionPrice = selectedProductOption.prix;
           });
         },
@@ -258,6 +268,7 @@ class _ProductPageState extends State<ProductPage> {
               orElse: () => ProductOptions("", 0.0, "", ""),
             );
 
+            couleurCouvertureName = selectedProductOption.name;
             couleurCouverturePrice = selectedProductOption.prix;
           });
         },
@@ -288,6 +299,7 @@ class _ProductPageState extends State<ProductPage> {
             setState(() {
               isCouvertureCouleur = false;
               couverturePrice = couvertureNoirEtBlancPrice;
+              String couverturePapierName = "Noir et blanc";
             });
           },
         ),
@@ -299,6 +311,7 @@ class _ProductPageState extends State<ProductPage> {
             setState(() {
               isCouvertureCouleur = true;
               couverturePrice = couvertureCouleurPrice;
+              String couverturePapierName = "Couleur";
             });
           },
         ),
@@ -318,6 +331,7 @@ class _ProductPageState extends State<ProductPage> {
           onChanged: (value) {
             setState(() {
               isCouverturePapierIvoire = false;
+              String couvertureName = "Papier blanc";
             });
           },
         ),
@@ -328,6 +342,7 @@ class _ProductPageState extends State<ProductPage> {
           onChanged: (value) {
             setState(() {
               isCouverturePapierIvoire = true;
+              String couvertureName = "Papier Ivoire";
             });
           },
         ),
@@ -549,14 +564,20 @@ class _ProductPageState extends State<ProductPage> {
                                       0,
                               unitPrice: widget.prix,
                               isRectoVerso: isRectoVerso,
+                              reliureName: reliureName,
                               reliurePrice: reliurePrice,
                               numberOfCopies:
                                   int.tryParse(numberOfCopiesController.text) ??
                                       0,
+                              couvertureName: couvertureName,
+                              premierepageName: premierepageName,
                               premierepagePrice: premierepagePrice,
+                              finitionName: finitionName,
                               finitionPrice: finitionPrice,
                               couverturePrice: couverturePrice,
+                              couleurCouvertureName: couleurCouvertureName,
                               couleurCouverturePrice: couleurCouverturePrice,
+                              couverturePapierName: couverturePapierName,
                               totalPrice: totalPrice +
                                   reliurePrice +
                                   premierepagePrice +

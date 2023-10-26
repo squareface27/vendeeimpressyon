@@ -17,23 +17,36 @@ class ResumePage extends StatefulWidget {
   final double finitionPrice;
   final double couverturePrice;
   final double couleurCouverturePrice;
+  final String premierepageName;
+  final String couleurCouvertureName;
+  final String reliureName;
+  final String finitionName;
+  final String couvertureName;
+  final String couverturePapierName;
   double totalPrice;
   final email;
 
-  ResumePage(
-      {required this.productName,
-      required this.pdfFileName,
-      required this.numberOfPages,
-      required this.numberOfCopies,
-      required this.unitPrice,
-      required this.isRectoVerso,
-      required this.reliurePrice,
-      required this.premierepagePrice,
-      required this.finitionPrice,
-      required this.couverturePrice,
-      required this.couleurCouverturePrice,
-      required this.totalPrice,
-      required this.email});
+  ResumePage({
+    required this.productName,
+    required this.pdfFileName,
+    required this.numberOfPages,
+    required this.numberOfCopies,
+    required this.unitPrice,
+    required this.isRectoVerso,
+    required this.reliurePrice,
+    required this.premierepagePrice,
+    required this.finitionPrice,
+    required this.couverturePrice,
+    required this.couleurCouverturePrice,
+    required this.couleurCouvertureName,
+    required this.totalPrice,
+    required this.email,
+    required this.reliureName,
+    required this.premierepageName,
+    required this.finitionName,
+    required this.couvertureName,
+    required this.couverturePapierName,
+  });
 
   @override
   _ResumePageState createState() => _ResumePageState();
@@ -207,7 +220,7 @@ class _ResumePageState extends State<ResumePage> {
                         "Type de Finition : ${widget.finitionPrice}€",
                       ),
                       Text(
-                        "Type de Couverture : ${widget.couverturePrice}€",
+                        "Type de Couverture : ${widget.couvertureName} ${widget.couverturePrice}€",
                       ),
                       Text(
                         "Couleur de Couverture : ${widget.couleurCouverturePrice}€",
@@ -339,6 +352,13 @@ class _ResumePageState extends State<ResumePage> {
         final totalPrice = widget.totalPrice;
         final nombreExemplaire = widget.numberOfCopies;
         final email = widget.email;
+        final reliureName = widget.reliureName;
+        final couleurCouvertureName = widget.couleurCouvertureName;
+        final premierepageName = widget.premierepageName;
+        final finitionName = widget.finitionName;
+        final couvertureName = widget.couvertureName;
+        final couverturePapierName = widget.couverturePapierName;
+        final numberOfPages = widget.numberOfPages;
         final dateTimeNow =
             DateFormat('dd-MM-yyyy HH:mm:ss').format(DateTime.now());
 
@@ -349,6 +369,13 @@ class _ResumePageState extends State<ResumePage> {
           'totalPrice': totalPrice,
           'date': dateTimeNow,
           'quantite': nombreExemplaire,
+          'nombrePage': numberOfPages,
+          'reliureName': reliureName,
+          'couleurCouvertureName': couleurCouvertureName,
+          'premierepageName': premierepageName,
+          'finitionName': finitionName,
+          'couvertureName': couvertureName,
+          'couverturePapierName': couverturePapierName,
         };
 
         final jsonData = json.encode(paymentInfo);
