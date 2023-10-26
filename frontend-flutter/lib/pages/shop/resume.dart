@@ -49,6 +49,8 @@ class _ResumePageState extends State<ResumePage> {
   double reductionCommandeInternet = 0.0;
   double fraisGestion = 0.0;
 
+  int paymentCount = 0;
+
   bool isAllFieldsFilled() {
     return widget.numberOfPages > 0 && widget.pdfFileName.isNotEmpty;
   }
@@ -173,12 +175,13 @@ class _ResumePageState extends State<ResumePage> {
         padding: const EdgeInsets.all(16.0),
         child: Center(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Card(
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
                         "Produit : ${widget.productName}",
@@ -187,26 +190,33 @@ class _ResumePageState extends State<ResumePage> {
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 16),
-                      Text("Fichier PDF : ${widget.pdfFileName}",
-                          textAlign: TextAlign.center),
-                      Text("Nombre de Pages : ${widget.numberOfPages} pages",
-                          textAlign: TextAlign.center),
                       Text(
-                          "Recto/Verso : ${widget.isRectoVerso ? 'Oui' : 'Non'}",
-                          textAlign: TextAlign.center),
-                      Text("Type de Reliure : ${widget.reliurePrice}€",
-                          textAlign: TextAlign.center),
-                      Text("Type de 1ère Page : ${widget.premierepagePrice}€",
-                          textAlign: TextAlign.center),
-                      Text("Type de Finition : ${widget.finitionPrice}€",
-                          textAlign: TextAlign.center),
-                      Text("Type de Couverture : ${widget.couverturePrice}€",
-                          textAlign: TextAlign.center),
+                        "Nombre de Pages : ${widget.numberOfPages} pages",
+                      ),
                       Text(
-                          "Couleur de Couverture : ${widget.couleurCouverturePrice}€",
-                          textAlign: TextAlign.center),
-                      Text("Nombre d'exemplaires : ${widget.numberOfCopies}",
-                          textAlign: TextAlign.center),
+                        "Recto/Verso : ${widget.isRectoVerso ? 'Oui' : 'Non'}",
+                      ),
+                      Text(
+                        "Type de Reliure : ${widget.reliurePrice}€",
+                      ),
+                      Text(
+                        "Type de 1ère Page : ${widget.premierepagePrice}€",
+                      ),
+                      Text(
+                        "Type de Finition : ${widget.finitionPrice}€",
+                      ),
+                      Text(
+                        "Type de Couverture : ${widget.couverturePrice}€",
+                      ),
+                      Text(
+                        "Couleur de Couverture : ${widget.couleurCouverturePrice}€",
+                      ),
+                      Text(
+                        "Nombre d'exemplaires : ${widget.numberOfCopies}",
+                      ),
+                      Text(
+                        "Fichier PDF : ${widget.pdfFileName}",
+                      ),
                     ],
                   ),
                 ),
@@ -314,18 +324,28 @@ class _ResumePageState extends State<ResumePage> {
     }
   }
 
+  void resetPaymentCount() {
+    setState(() {
+      paymentCount = 0;
+    });
+  }
+
   displayPaymentSheet() async {
     try {
       await Stripe.instance.presentPaymentSheet().then((value) async {
+        paymentCount++;
         final productName = widget.productName;
         final totalPrice = widget.totalPrice;
+        final nombreExemplaire = widget.numberOfCopies;
         final dateTimeNow =
             DateFormat('dd-MM-yyyy HH:mm:ss').format(DateTime.now());
 
         final paymentInfo = {
+          'id': paymentCount,
           'productName': productName,
           'totalPrice': totalPrice,
           'date': dateTimeNow,
+          'quantite': nombreExemplaire,
         };
 
         final jsonData = json.encode(paymentInfo);
