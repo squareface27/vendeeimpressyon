@@ -87,7 +87,10 @@ class _LoginPageState extends State<LoginPage> {
         }
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => NavBar()),
+          MaterialPageRoute(
+              builder: (context) => NavBar(
+                    email: mailController.text,
+                  )),
         );
       } else {
         showErrorMessage(context, "Le mot de passe ou l'email est incorrect.");

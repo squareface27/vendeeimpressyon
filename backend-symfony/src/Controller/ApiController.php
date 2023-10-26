@@ -9,6 +9,7 @@ use App\Entity\UserEntity;
 use Psr\Log\LoggerInterface;
 use App\Entity\ArticlesEntity;
 use App\Services\ApiAuthService;
+use Symfony\Component\Mime\Email;
 use App\Repository\UserEntityRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\FraisEntityRepository;
@@ -26,6 +27,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Repository\EtablissementScolaireEntityRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Mailer\MailerInterface;
 
 class ApiController extends AbstractController
 {
@@ -267,7 +269,7 @@ class ApiController extends AbstractController
 
     // Création du PDF des factures
 
-    public function generateInvoice(Request $request)
+    public function generateInvoice(Request $request, MailerInterface $mailer)
 {
     $date = new DateTime();
     $annee = $date->format('Y');
@@ -283,8 +285,10 @@ class ApiController extends AbstractController
     $price = $data['totalPrice'];
     $date = $data['date'];
     $quantite = $data['quantite'];
+    $email = $data['email'];
 
     $this->logger->info('Données reçues depuis Flutter : ' . $rawData);
+    $this->logger->info('Email : ' . $email);
 
     $numeroFacture = "FACTURE N° $annee-$mois-$id";
     $numeroFactureFile = "FACTURE N° $annee-$mois-$id.pdf";
@@ -386,7 +390,16 @@ class ApiController extends AbstractController
     $output = $dompdf->output();
     file_put_contents($numeroFactureFile, $output);
 
-    return new JsonResponse(['message' => 'Facture générée avec succès']);
+    $email = (new Email())
+        ->from('vendee.impressyon@gmail.com')
+        ->to($email)
+        ->subject('Facture Vendée Impress\'Yon')
+        ->text('Merci de trouver en pièce jointe la facture de votre achat.')
+        ->attachFromPath($numeroFactureFile);
+
+    $mailer->send($email);
+
+    return new JsonResponse(['message' => 'Facture générée et envoyée avec succès']);
 
 }
 }

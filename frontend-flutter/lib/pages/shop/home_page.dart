@@ -12,6 +12,10 @@ class Category {
 }
 
 class HomePage extends StatefulWidget {
+  final String email;
+
+  HomePage({required this.email});
+
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -87,7 +91,10 @@ class _HomePageState extends State<HomePage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => SousCategoriePage(category.name),
+                        builder: (context) => SousCategoriePage(
+                          category.name,
+                          widget.email,
+                        ),
                       ),
                     );
                   },

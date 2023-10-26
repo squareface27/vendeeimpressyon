@@ -5,7 +5,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:flutter_stripe/flutter_stripe.dart' hide Card;
+import 'package:flutter_stripe/flutter_stripe.dart';
 
 final apiUrl = dotenv.env['API_URL_SETTINGS']!;
 

@@ -18,21 +18,22 @@ class ResumePage extends StatefulWidget {
   final double couverturePrice;
   final double couleurCouverturePrice;
   double totalPrice;
+  final email;
 
-  ResumePage({
-    required this.productName,
-    required this.pdfFileName,
-    required this.numberOfPages,
-    required this.numberOfCopies,
-    required this.unitPrice,
-    required this.isRectoVerso,
-    required this.reliurePrice,
-    required this.premierepagePrice,
-    required this.finitionPrice,
-    required this.couverturePrice,
-    required this.couleurCouverturePrice,
-    required this.totalPrice,
-  });
+  ResumePage(
+      {required this.productName,
+      required this.pdfFileName,
+      required this.numberOfPages,
+      required this.numberOfCopies,
+      required this.unitPrice,
+      required this.isRectoVerso,
+      required this.reliurePrice,
+      required this.premierepagePrice,
+      required this.finitionPrice,
+      required this.couverturePrice,
+      required this.couleurCouverturePrice,
+      required this.totalPrice,
+      required this.email});
 
   @override
   _ResumePageState createState() => _ResumePageState();
@@ -337,11 +338,13 @@ class _ResumePageState extends State<ResumePage> {
         final productName = widget.productName;
         final totalPrice = widget.totalPrice;
         final nombreExemplaire = widget.numberOfCopies;
+        final email = widget.email;
         final dateTimeNow =
             DateFormat('dd-MM-yyyy HH:mm:ss').format(DateTime.now());
 
         final paymentInfo = {
           'id': paymentCount,
+          'email': email,
           'productName': productName,
           'totalPrice': totalPrice,
           'date': dateTimeNow,

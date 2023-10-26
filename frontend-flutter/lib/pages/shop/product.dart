@@ -12,12 +12,14 @@ class ProductPage extends StatefulWidget {
   final double prix;
   final String image;
   final String categorieid;
+  final String email;
 
   ProductPage({
     required this.name,
     required this.prix,
     required this.image,
     required this.categorieid,
+    required this.email,
   });
 
   @override
@@ -539,6 +541,7 @@ class _ProductPageState extends State<ProductPage> {
                           context,
                           MaterialPageRoute(
                             builder: (context) => ResumePage(
+                              email: widget.email,
                               productName: widget.name,
                               pdfFileName: selectedPdfFileName,
                               numberOfPages:

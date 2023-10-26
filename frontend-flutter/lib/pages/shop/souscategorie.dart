@@ -17,8 +17,9 @@ class SousCategorie {
 
 class SousCategoriePage extends StatefulWidget {
   final String categoryName;
+  final String email;
 
-  SousCategoriePage(this.categoryName);
+  SousCategoriePage(this.categoryName, this.email);
 
   @override
   _SousCategoriePageState createState() => _SousCategoriePageState();
@@ -41,7 +42,6 @@ class _SousCategoriePageState extends State<SousCategoriePage> {
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       final categoryName = widget.categoryName;
-
       final filteredArticles = List<SousCategorie>.from(data.map((item) =>
           SousCategorie(item['name'], item['unitprice'], item['image'],
               item['categorieid'], item['description'])));
@@ -110,6 +110,7 @@ class _SousCategoriePageState extends State<SousCategoriePage> {
                           prix: article.prix,
                           image: article.image,
                           categorieid: article.categorieid,
+                          email: widget.email,
                         ),
                       ),
                     );
