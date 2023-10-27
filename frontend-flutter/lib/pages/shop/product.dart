@@ -144,8 +144,6 @@ class _ProductPageState extends State<ProductPage> {
     }
   }
 
-  void validateOrder() {}
-
   Widget buildDropdownReliure() {
     final filteredOptions = productoptions
         .where((option) =>
@@ -559,6 +557,7 @@ class _ProductPageState extends State<ProductPage> {
                               email: widget.email,
                               productName: widget.name,
                               pdfFileName: selectedPdfFileName,
+                              selectedPdfPath: selectedPdfPath,
                               numberOfPages:
                                   int.tryParse(numberOfPagesController.text) ??
                                       0,

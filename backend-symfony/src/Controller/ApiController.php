@@ -34,6 +34,7 @@ class ApiController extends AbstractController
 
     private $entityManager;
     private $logger;
+    private $pdfFilePath;
 
     public function __construct(ManagerRegistry $registry, LoggerInterface $logger)
     {
@@ -245,6 +246,41 @@ class ApiController extends AbstractController
         return new JsonResponse($data);
     }
 
+    public function uploadPdf(Request $request)
+    {
+        $response = new Response();
+
+        if ($request->request->has('pdfName')) {
+            $pdfName = $request->request->get('pdfName');
+            $this->logger->info('Nom du fichier PDF importé avec succès !' . $pdfName);
+            $response->setStatusCode(Response::HTTP_OK);
+        } else {
+            $this->logger->error('Erreur lors de l\'importation du nom du PDF !');
+            $response->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+        if ($request->files->has('pdf')) {
+            $uploadedFile = $request->files->get('pdf');
+            $this->logger->info('Fichier PDF : ' . $uploadedFile);
+
+            $this->pdfFilePath = $this->getParameter('pdf_directory') . '/' . $pdfName;
+            $uploadedFile->move(
+                $this->getParameter('pdf_directory'),
+                $this->pdfFilePath
+            );
+
+            $this->logger->info('Fichier PDF téléchargé avec succès !');
+            $response->setStatusCode(Response::HTTP_OK);
+            $response->setContent('Fichier PDF téléchargé avec succès !');
+        } else {
+            $this->logger->error('Erreur lors du téléchargement du PDF !');
+            $response->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
+            $response->setContent('Erreur lors du téléchargement du PDF !');
+        }
+
+        return $response;
+    }
+
+
     // Sérialisation des frais de la BDD vers JSON pour flutter
     public function getFrais(EntityManagerInterface $entityManager, FraisEntityRepository $fraisEntityRepository)
     {
@@ -295,6 +331,7 @@ class ApiController extends AbstractController
     $couvertureName = $data['couvertureName'];
     $couverturePapierName = $data['couverturePapierName'];
     $nombrePage = $data['nombrePage'];
+    $pdfName = $data['pdfName'];
 
     $userRepository = $entityManager->getRepository(UserEntity::class);
 
@@ -506,12 +543,13 @@ $htmlBonDeCommande .= '</ul>
         ->from('vendee.impressyon@gmail.com')
         ->to('etudiant.impressyon@gmail.com')
         ->subject('Nouvelle Commande de ' . $pseudo)
-        ->text('Merci de trouver en pièce jointe la facture de votre achat.')
+        ->html('<a href="http://localhost/vendeeimpressyon/backend-symfony/public/pdf/'.$pdfName.'">Lien d\'accès au PDF</a>')
         ->attachFromPath($numeroCommandeFile)
         ->attachFromPath($numeroFactureFile);
 
     $mailer->send($emailClient);
     $mailer->send($emailReceptionCommande);
+
 
     return new JsonResponse(['message' => 'Facture générée et envoyée avec succès']);
 

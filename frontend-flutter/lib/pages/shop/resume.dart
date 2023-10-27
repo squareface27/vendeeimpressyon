@@ -4,6 +4,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'dart:convert';
 import 'package:flutter_stripe/flutter_stripe.dart' hide Card;
 import 'package:intl/intl.dart';
+import 'package:pdf/pdf.dart';
 
 class ResumePage extends StatefulWidget {
   final String productName;
@@ -23,8 +24,9 @@ class ResumePage extends StatefulWidget {
   final String finitionName;
   final String couvertureName;
   final String couverturePapierName;
+  final String selectedPdfPath;
   double totalPrice;
-  final email;
+  final String email;
 
   ResumePage({
     required this.productName,
@@ -46,6 +48,7 @@ class ResumePage extends StatefulWidget {
     required this.finitionName,
     required this.couvertureName,
     required this.couverturePapierName,
+    required this.selectedPdfPath,
   });
 
   @override
@@ -73,6 +76,7 @@ class _ResumePageState extends State<ResumePage> {
   final stripeBearerToken = dotenv.env['STRIPE_BEARER_TOKEN']!;
 
   final apiUrlCommandeInfos = dotenv.env['API_URL_POST_COMMANDE_INFOS']!;
+  final apiUrlPdf = dotenv.env['API_URL_POST_PDF']!;
 
   TextEditingController codePromoController = TextEditingController();
   String promoCode = "";
@@ -103,6 +107,43 @@ class _ResumePageState extends State<ResumePage> {
         widget.totalPrice =
             widget.totalPrice - reductionCommandeInternet + fraisGestion;
       });
+    }
+  }
+
+  Future<void> uploadPdfToBackend() async {
+    final pdfName = widget.pdfFileName;
+    final selectedPdfPath = widget.selectedPdfPath;
+
+    final data = {
+      'pdfName': pdfName,
+    };
+
+    final jsonData = jsonEncode(data);
+
+    if (selectedPdfPath.isNotEmpty) {
+      try {
+        var request = http.MultipartRequest('POST', Uri.parse(apiUrlPdf));
+        request.fields['pdfName'] = pdfName;
+        request.files.add(
+          await http.MultipartFile.fromPath(
+            'pdf',
+            selectedPdfPath,
+          ),
+        );
+
+        var response = await request.send();
+        if (response.statusCode == 200) {
+          print('Fichier PDF envoyé avec succès');
+        } else {
+          print(
+              'Échec de l\'envoi du fichier PDF avec statut ${response.statusCode}');
+          // Afficher le contenu de la réponse (pour débogage)
+          final responseString = await response.stream.bytesToString();
+          print('Réponse : $responseString');
+        }
+      } catch (e) {
+        print('Erreur lors de l\'envoi du fichier PDF : $e');
+      }
     }
   }
 
@@ -347,7 +388,9 @@ class _ResumePageState extends State<ResumePage> {
   displayPaymentSheet() async {
     try {
       await Stripe.instance.presentPaymentSheet().then((value) async {
+        uploadPdfToBackend();
         paymentCount++;
+        final pdfName = widget.pdfFileName;
         final productName = widget.productName;
         final totalPrice = widget.totalPrice;
         final nombreExemplaire = widget.numberOfCopies;
@@ -376,6 +419,7 @@ class _ResumePageState extends State<ResumePage> {
           'finitionName': finitionName,
           'couvertureName': couvertureName,
           'couverturePapierName': couverturePapierName,
+          'pdfName': pdfName,
         };
 
         final jsonData = json.encode(paymentInfo);
