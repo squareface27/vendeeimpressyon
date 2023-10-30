@@ -1,12 +1,31 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Reset your password{% endblock %}
+{% block title %}Réinitialiser votre mot de passe{% endblock %}
 
 {% block body %}
-    <h1>Reset your password</h1>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-6">
+                <div class="card mt-5 mx-auto">
+                    <div class="card-body">
+                        <h1 class="card-title">Réinitialiser votre mot de passe</h1>
 
-    {{ form_start(resetForm) }}
-        {{ form_row(resetForm.plainPassword) }}
-        <button class="btn btn-primary">Reset password</button>
-    {{ form_end(resetForm) }}
+                        {{ form_start(resetForm, {'attr': {'class': 'form-horizontal'}}) }}
+                        <div class="form-group">
+                            {{ form_row(resetForm.plainPassword, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+                        <button class="btn btn-primary btn-block">Réinitialiser le mot de passe</button>
+                        {{ form_end(resetForm) }}
+
+                        {# Display form errors here #}
+                        {% if form_errors(resetForm) is not empty %}
+                            <div class="alert alert-danger mt-3">
+                                {{ form_errors(resetForm) }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
