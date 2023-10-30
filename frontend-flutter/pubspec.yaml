@@ -41,3 +41,4 @@ flutter:
   assets:
     - .env
     - lib/assets/images/logo.png
+    - lib/assets/images/vacance.png

@@ -6,22 +6,32 @@ class Vacance extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Padding(
-        padding: EdgeInsets.all(8.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+    return Scaffold(
+      body: Center(
+        child: Stack(
           children: [
-            Center(
-              child: Text(
-                "Le mode vacance est activé !",
-                style: TextStyle(
-                  color: blue,
-                  fontSize: 25.0,
-                  fontWeight: FontWeight.bold,
+            Image.asset(
+              'lib/assets/images/vacance.png',
+              fit: BoxFit.contain,
+              width: double.infinity,
+              height: double.infinity,
+            ),
+            const Positioned(
+              top: 0,
+              bottom: -350,
+              left: 0,
+              right: 0,
+              child: Center(
+                child: Text(
+                  "L'application est indisponible",
+                  style: TextStyle(
+                    color: black,
+                    fontSize: 25.0,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
-            )
+            ),
           ],
         ),
       ),
