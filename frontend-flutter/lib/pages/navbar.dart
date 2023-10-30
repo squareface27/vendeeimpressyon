@@ -6,7 +6,6 @@ class NavBar extends StatelessWidget {
   final String email;
   final _tab1navigatorKey = GlobalKey<NavigatorState>();
   final _tab2navigatorKey = GlobalKey<NavigatorState>();
-  final _tab3navigatorKey = GlobalKey<NavigatorState>();
 
   NavBar({required this.email});
 
@@ -24,7 +23,7 @@ class NavBar extends StatelessWidget {
           tab: const Settings(),
           icon: Icons.settings,
           title: '',
-          navigatorkey: _tab3navigatorKey,
+          navigatorkey: _tab2navigatorKey,
         ),
       ],
     );

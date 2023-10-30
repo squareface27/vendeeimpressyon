@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:flutter_stripe/flutter_stripe.dart' hide Card;
 import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
+import 'package:vendeeimpressyon/pages/shop/success_page.dart';
 
 class ResumePage extends StatefulWidget {
   final String productName;
@@ -27,6 +28,7 @@ class ResumePage extends StatefulWidget {
   final String selectedPdfPath;
   double totalPrice;
   final String email;
+  final String categorieid;
 
   ResumePage({
     required this.productName,
@@ -49,6 +51,7 @@ class ResumePage extends StatefulWidget {
     required this.couvertureName,
     required this.couverturePapierName,
     required this.selectedPdfPath,
+    required this.categorieid,
   });
 
   @override
@@ -388,6 +391,14 @@ class _ResumePageState extends State<ResumePage> {
   displayPaymentSheet() async {
     try {
       await Stripe.instance.presentPaymentSheet().then((value) async {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => PaymentSuccessPage(
+              email: widget.email,
+              categorieid: widget.categorieid,
+            ),
+          ),
+        );
         uploadPdfToBackend();
         paymentCount++;
         final pdfName = widget.pdfFileName;

@@ -554,6 +554,7 @@ class _ProductPageState extends State<ProductPage> {
                           context,
                           MaterialPageRoute(
                             builder: (context) => ResumePage(
+                              categorieid: widget.categorieid,
                               email: widget.email,
                               productName: widget.name,
                               pdfFileName: selectedPdfFileName,
