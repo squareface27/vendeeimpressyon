@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:vendeeimpressyon/colors.dart';
 import 'package:restart_app/restart_app.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Settings extends StatefulWidget {
   const Settings({Key? key}) : super(key: key);
@@ -86,9 +87,14 @@ class _SettingsState extends State<Settings> {
                           Text("Autre", style: headingStyle),
                         ],
                       ),
-                      const ListTile(
-                        leading: Icon(Icons.file_open_outlined),
-                        title: Text("Conditions Générales de Vente"),
+                      ListTile(
+                        leading: const Icon(Icons.file_open_outlined),
+                        title: const Text("Conditions Générales de Vente"),
+                        onTap: () {
+                          final cgvUrl = Uri.parse(
+                              'https://e-impressyon.fr/content/6-conditions-generales-de-vente');
+                          launchUrl(cgvUrl);
+                        },
                       ),
                       const Divider(),
                     ],
