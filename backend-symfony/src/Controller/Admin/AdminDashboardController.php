@@ -3,7 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\User;
-use App\Entity\CguEntity;
+use App\Entity\CgvEntity;
 use App\Entity\UserEntity;
 use App\Entity\FraisEntity;
 use App\Entity\ArticlesEntity;
@@ -47,7 +47,7 @@ class AdminDashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Listes des clients', 'fa fa-users', UserEntity::class);
         yield MenuItem::section('Paramètres de la boutique');
         yield MenuItem::linkToCrud('Paramètres', 'fa fa-cog', SettingsEntity::class);
-        yield MenuItem::linkToCrud('Modifier les CGU', 'fa fa-file-text', CguEntity::class);
+        yield MenuItem::linkToCrud('Modifier les CGV', 'fa fa-file-text', CgvEntity::class);
         yield MenuItem::linkToCrud('Liste des frais', 'fa fa-credit-card-alt', FraisEntity::class);
         yield MenuItem::linkToCrud('Liste des administrateurs', 'fa fa-user', User::class);
     }

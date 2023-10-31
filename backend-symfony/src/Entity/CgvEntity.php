@@ -2,13 +2,13 @@
 
 namespace App\Entity;
 
-use App\Repository\CguEntityRepository;
+use App\Repository\CgvEntityRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=CguEntityRepository::class)
+ * @ORM\Entity(repositoryClass=CgvEntityRepository::class)
  */
-class CguEntity
+class CgvEntity
 {
     /**
      * @ORM\Id
@@ -20,21 +20,21 @@ class CguEntity
     /**
      * @ORM\Column(type="text")
      */
-    private $cgu;
+    private $cgv;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getCgu(): ?string
+    public function getCgv(): ?string
     {
-        return $this->cgu;
+        return $this->cgv;
     }
 
-    public function setCgu(string $cgu): self
+    public function setCgv(string $cgv): self
     {
-        $this->cgu = $cgu;
+        $this->cgv = $cgv;
 
         return $this;
     }

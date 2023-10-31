@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:vendeeimpressyon/colors.dart';
 import 'package:restart_app/restart_app.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class Settings extends StatefulWidget {
   const Settings({Key? key}) : super(key: key);
@@ -91,8 +92,7 @@ class _SettingsState extends State<Settings> {
                         leading: const Icon(Icons.file_open_outlined),
                         title: const Text("Conditions Générales de Vente"),
                         onTap: () {
-                          final cgvUrl = Uri.parse(
-                              'https://e-impressyon.fr/content/6-conditions-generales-de-vente');
+                          final cgvUrl = Uri.parse(dotenv.env['CGV_URL']!);
                           launchUrl(cgvUrl);
                         },
                       ),

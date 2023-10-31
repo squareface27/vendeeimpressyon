@@ -2,26 +2,26 @@
 
 namespace App\Repository;
 
-use App\Entity\CguEntity;
+use App\Entity\CgvEntity;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<CguEntity>
+ * @extends ServiceEntityRepository<CgvEntity>
  *
- * @method CguEntity|null find($id, $lockMode = null, $lockVersion = null)
- * @method CguEntity|null findOneBy(array $criteria, array $orderBy = null)
- * @method CguEntity[]    findAll()
- * @method CguEntity[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method CgvEntity|null find($id, $lockMode = null, $lockVersion = null)
+ * @method CgvEntity|null findOneBy(array $criteria, array $orderBy = null)
+ * @method CgvEntity[]    findAll()
+ * @method CgvEntity[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class CguEntityRepository extends ServiceEntityRepository
+class CgvEntityRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, CguEntity::class);
+        parent::__construct($registry, CgvEntity::class);
     }
 
-    public function add(CguEntity $entity, bool $flush = false): void
+    public function add(CgvEntity $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
 
@@ -30,7 +30,7 @@ class CguEntityRepository extends ServiceEntityRepository
         }
     }
 
-    public function remove(CguEntity $entity, bool $flush = false): void
+    public function remove(CgvEntity $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
 
@@ -40,7 +40,7 @@ class CguEntityRepository extends ServiceEntityRepository
     }
 
 //    /**
-//     * @return CguEntity[] Returns an array of CguEntity objects
+//     * @return CgvEntity[] Returns an array of CgvEntity objects
 //     */
 //    public function findByExampleField($value): array
 //    {
@@ -54,7 +54,7 @@ class CguEntityRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?CguEntity
+//    public function findOneBySomeField($value): ?CgvEntity
 //    {
 //        return $this->createQueryBuilder('c')
 //            ->andWhere('c.exampleField = :val')

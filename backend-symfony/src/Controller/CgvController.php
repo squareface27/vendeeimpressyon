@@ -2,13 +2,13 @@
 
 namespace App\Controller;
 
-use App\Entity\CguEntity;
+use App\Entity\CgvEntity;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-class CguController extends AbstractController
+class CgvController extends AbstractController
 {
     private $entityManager;
 
@@ -19,10 +19,10 @@ class CguController extends AbstractController
 
     public function showAction()
     {
-    $cguEntity = $this->entityManager->getRepository(CguEntity::class)->findOneBy([]);
+    $cgvEntity = $this->entityManager->getRepository(CgvEntity::class)->findOneBy([]);
 
-    return $this->render('cgu/index.html.twig', [
-        'entity' => $cguEntity,
+    return $this->render('cgv/index.html.twig', [
+        'entity' => $cgvEntity,
     ]);
     }  
 
