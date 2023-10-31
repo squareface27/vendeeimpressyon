@@ -37,7 +37,7 @@ class AdminDashboardController extends AbstractDashboardController
     public function configureMenuItems(): iterable
     {
         yield MenuItem::section('Établissements scolaires');
-        yield MenuItem::linkToCrud('Liste des établissements', 'fa fa-list', EtablissementScolaireEntity::class);
+        yield MenuItem::linkToCrud('Liste des établissements', 'fa fa-building', EtablissementScolaireEntity::class);
         yield MenuItem::section('Boutique');
         yield MenuItem::linkToCrud('Listes des catégories', 'fa fa-tags', CategoriesEntity::class);
         yield MenuItem::linkToCrud('Listes des articles', 'fa fa-shopping-bag', ArticlesEntity::class);
@@ -48,7 +48,7 @@ class AdminDashboardController extends AbstractDashboardController
         yield MenuItem::section('Paramètres de la boutique');
         yield MenuItem::linkToCrud('Paramètres', 'fa fa-cog', SettingsEntity::class);
         yield MenuItem::linkToCrud('Modifier les CGU', 'fa fa-file-text', CguEntity::class);
-        yield MenuItem::linkToCrud('Liste des frais', 'fa fa-money', FraisEntity::class);
+        yield MenuItem::linkToCrud('Liste des frais', 'fa fa-credit-card-alt', FraisEntity::class);
         yield MenuItem::linkToCrud('Liste des administrateurs', 'fa fa-user', User::class);
     }
 }
