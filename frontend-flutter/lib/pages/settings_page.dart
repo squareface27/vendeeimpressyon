@@ -88,6 +88,7 @@ class _SettingsState extends State<Settings> {
                           Text("Autre", style: headingStyle),
                         ],
                       ),
+                      const Divider(),
                       ListTile(
                         leading: const Icon(Icons.file_open_outlined),
                         title: const Text("Conditions Générales de Vente"),
@@ -96,7 +97,14 @@ class _SettingsState extends State<Settings> {
                           launchUrl(cgvUrl);
                         },
                       ),
-                      const Divider(),
+                      ListTile(
+                        leading: const Icon(Icons.phone),
+                        title: const Text("Nous contacter"),
+                        onTap: () {
+                          final cgvUrl = Uri(scheme: 'tel', path: '0251980858');
+                          launchUrl(cgvUrl);
+                        },
+                      ),
                     ],
                   ),
                 ),
