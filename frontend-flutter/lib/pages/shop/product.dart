@@ -39,7 +39,9 @@ class ProductOptions {
 class _ProductPageState extends State<ProductPage> {
   bool isAllFieldsFilled() {
     return (selectedPdfFileName.isNotEmpty &&
-        numberOfPagesController.text.isNotEmpty);
+        numberOfPagesController.text.isNotEmpty &&
+        isNumberOfCopiesValid &&
+        numberOfCopiesController.text.isNotEmpty);
   }
 
   List<ProductOptions> productoptions = [];
@@ -57,6 +59,9 @@ class _ProductPageState extends State<ProductPage> {
   bool isCouvertureCouleur = false;
 
   bool isCouverturePapierIvoire = false;
+
+  bool isNumberOfCopiesValid = true;
+  bool isNumberOfPagesValid = true;
 
   final apiUrl = dotenv.env['API_URL_GET_PRODUCTOPTIONS']!;
 
@@ -409,7 +414,7 @@ class _ProductPageState extends State<ProductPage> {
                                   ),
                                 );
                               },
-                              child: const Text("Voir le PDF"),
+                              child: const Text("Aperçu du PDF"),
                             ),
                           ),
                         if (!isPdfSelected)
@@ -457,7 +462,15 @@ class _ProductPageState extends State<ProductPage> {
                           setState(() {
                             int numberOfPages = int.tryParse(value) ?? 0;
                             double unitPrice = widget.prix;
+                            if (numberOfPages < 1) {
+                              isNumberOfPagesValid = false;
+                            } else {
+                              isNumberOfPagesValid = true;
+                            }
                             totalPrice = numberOfPages * unitPrice;
+                            if (numberOfPagesController.text.isEmpty) {
+                              isNumberOfCopiesValid = false;
+                            }
                           });
                         },
                       ),
@@ -542,14 +555,15 @@ class _ProductPageState extends State<ProductPage> {
                             int numberOfCopies = int.tryParse(value) ?? 0;
                             double unitPrice = widget.prix;
                             if (numberOfCopies < 1) {
-                              numberOfCopies = 1;
-                              numberOfCopiesController.text = "1";
+                              isNumberOfCopiesValid = false;
+                            } else {
+                              isNumberOfCopiesValid = true;
                             }
                             totalPrice =
                                 numberOfPages * unitPrice * numberOfCopies;
 
                             if (numberOfPagesController.text.isEmpty) {
-                              numberOfPages = 1;
+                              isNumberOfCopiesValid = false;
                             }
                           });
                         },
@@ -558,6 +572,11 @@ class _ProductPageState extends State<ProductPage> {
                   ),
                 ],
               ),
+              if (!isNumberOfCopiesValid)
+                const Text(
+                  "Le nombre d'exemplaires ne peut pas être inférieur à 1.",
+                  style: TextStyle(fontSize: 16, color: Colors.red),
+                ),
               Text(
                 "Prix total = ${(totalPrice + reliurePrice + premierepagePrice + finitionPrice + couverturePrice).toStringAsFixed(2)}€",
                 style: const TextStyle(fontSize: 16),
