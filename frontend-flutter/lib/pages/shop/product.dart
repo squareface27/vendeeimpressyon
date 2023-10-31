@@ -186,27 +186,32 @@ class _ProductPageState extends State<ProductPage> {
         .toList();
 
     if (filteredOptions.isNotEmpty) {
-      return DropdownButton<String>(
-        value:
-            selectedPremierePageOption ?? "Sélectionner un type de 1ère page",
-        onChanged: (newOption) {
-          setState(() {
-            selectedPremierePageOption = newOption;
-            final selectedProductOption = filteredOptions.firstWhere(
-              (option) => option.name == newOption,
-              orElse: () => ProductOptions("", 0.0, "", ""),
-            );
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          DropdownButton<String>(
+            value: selectedPremierePageOption ??
+                "Sélectionner un type de 1ère page",
+            onChanged: (newOption) {
+              setState(() {
+                selectedPremierePageOption = newOption;
+                final selectedProductOption = filteredOptions.firstWhere(
+                  (option) => option.name == newOption,
+                  orElse: () => ProductOptions("", 0.0, "", ""),
+                );
 
-            premierepageName = selectedProductOption.name;
-            premierepagePrice = selectedProductOption.prix;
-          });
-        },
-        items: filteredOptions
-            .map((option) => DropdownMenuItem<String>(
-                  value: option.name,
-                  child: Text(option.name),
-                ))
-            .toList(),
+                premierepageName = selectedProductOption.name;
+                premierepagePrice = selectedProductOption.prix;
+              });
+            },
+            items: filteredOptions
+                .map((option) => DropdownMenuItem<String>(
+                      value: option.name,
+                      child: Text(option.name),
+                    ))
+                .toList(),
+          ),
+        ],
       );
     } else {
       return const SizedBox.shrink();
@@ -221,26 +226,31 @@ class _ProductPageState extends State<ProductPage> {
         .toList();
 
     if (filteredOptions.isNotEmpty) {
-      return DropdownButton<String>(
-        value: selectedFinitionOption ?? "Sélectionner un type de finition",
-        onChanged: (newOption) {
-          setState(() {
-            selectedFinitionOption = newOption;
-            final selectedProductOption = filteredOptions.firstWhere(
-              (option) => option.name == newOption,
-              orElse: () => ProductOptions("", 0.0, "", ""),
-            );
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          DropdownButton<String>(
+            value: selectedFinitionOption ?? "Sélectionner un type de finition",
+            onChanged: (newOption) {
+              setState(() {
+                selectedFinitionOption = newOption;
+                final selectedProductOption = filteredOptions.firstWhere(
+                  (option) => option.name == newOption,
+                  orElse: () => ProductOptions("", 0.0, "", ""),
+                );
 
-            finitionName = selectedProductOption.name;
-            finitionPrice = selectedProductOption.prix;
-          });
-        },
-        items: filteredOptions
-            .map((option) => DropdownMenuItem<String>(
-                  value: option.name,
-                  child: Text(option.name),
-                ))
-            .toList(),
+                finitionName = selectedProductOption.name;
+                finitionPrice = selectedProductOption.prix;
+              });
+            },
+            items: filteredOptions
+                .map((option) => DropdownMenuItem<String>(
+                      value: option.name,
+                      child: Text(option.name),
+                    ))
+                .toList(),
+          ),
+        ],
       );
     } else {
       return const SizedBox.shrink();
@@ -255,27 +265,32 @@ class _ProductPageState extends State<ProductPage> {
         .toList();
 
     if (filteredOptions.isNotEmpty) {
-      return DropdownButton<String>(
-        value: selectedCouleurCouvertureOption ??
-            "Sélectionner une couleur de couverture",
-        onChanged: (newOption) {
-          setState(() {
-            selectedCouleurCouvertureOption = newOption;
-            final selectedProductOption = filteredOptions.firstWhere(
-              (option) => option.name == newOption,
-              orElse: () => ProductOptions("", 0.0, "", ""),
-            );
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          DropdownButton<String>(
+            value: selectedCouleurCouvertureOption ??
+                "Sélectionner une couleur de couverture",
+            onChanged: (newOption) {
+              setState(() {
+                selectedCouleurCouvertureOption = newOption;
+                final selectedProductOption = filteredOptions.firstWhere(
+                  (option) => option.name == newOption,
+                  orElse: () => ProductOptions("", 0.0, "", ""),
+                );
 
-            couleurCouvertureName = selectedProductOption.name;
-            couleurCouverturePrice = selectedProductOption.prix;
-          });
-        },
-        items: filteredOptions
-            .map((option) => DropdownMenuItem<String>(
-                  value: option.name,
-                  child: Text(option.name),
-                ))
-            .toList(),
+                couleurCouvertureName = selectedProductOption.name;
+                couleurCouverturePrice = selectedProductOption.prix;
+              });
+            },
+            items: filteredOptions
+                .map((option) => DropdownMenuItem<String>(
+                      value: option.name,
+                      child: Text(option.name),
+                    ))
+                .toList(),
+          ),
+        ],
       );
     } else {
       return const SizedBox.shrink();
@@ -287,7 +302,7 @@ class _ProductPageState extends State<ProductPage> {
       couverturePrice = couvertureNoirEtBlancPrice;
     }
     return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text("Couverture n/b 7€"),
         Radio(
@@ -320,7 +335,7 @@ class _ProductPageState extends State<ProductPage> {
   Widget radioPapierCouverture() {
     const Text("Le papier de couverture est inclus");
     return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text("Papier blanc (défaut)"),
         Radio(
@@ -417,7 +432,7 @@ class _ProductPageState extends State<ProductPage> {
                 ),
               ),
               Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   const Text(
                     "Nombre de pages : ",
@@ -451,7 +466,7 @@ class _ProductPageState extends State<ProductPage> {
                 ],
               ),
               Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   const Text("Recto",
                       style: TextStyle(
@@ -498,7 +513,7 @@ class _ProductPageState extends State<ProductPage> {
                   .any((option) => option.categorieid == "Thèses & Mémoires"))
                 radioPapierCouverture(),
               Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   const Text(
                     "Nombre d'exemplaires : ",
