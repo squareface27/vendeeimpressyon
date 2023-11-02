@@ -23,9 +23,9 @@ class _PaymentSuccessPageState extends State<PaymentSuccessPage> {
     super.initState();
 
     if (widget.categorieid == "Thèses & Mémoires") {
-      dureeRealisation = "72 heures";
+      dureeRealisation = "72 heures maximum, jour ouvré.";
     } else {
-      dureeRealisation = "24 heures";
+      dureeRealisation = "24 heures maximum, jour ouvré.";
     }
   }
 
