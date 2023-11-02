@@ -8,11 +8,9 @@ class SousCategorie {
   final String name;
   final double prix;
   final String image;
-  final String description;
   final String categorieid;
 
-  SousCategorie(
-      this.name, this.prix, this.image, this.categorieid, this.description);
+  SousCategorie(this.name, this.prix, this.image, this.categorieid);
 }
 
 class SousCategoriePage extends StatefulWidget {
@@ -43,8 +41,8 @@ class _SousCategoriePageState extends State<SousCategoriePage> {
       final data = json.decode(response.body);
       final categoryName = widget.categoryName;
       final filteredArticles = List<SousCategorie>.from(data.map((item) =>
-          SousCategorie(item['name'], item['unitprice'], item['image'],
-              item['categorieid'], item['description'])));
+          SousCategorie(item['name'], item['unitprice'].toDouble(),
+              item['image'], item['categorieid'])));
 
       selectedCategoryArticles = filteredArticles
           .where((article) => article.categorieid == categoryName)
