@@ -157,26 +157,29 @@ class _ProductPageState extends State<ProductPage> {
         .toList();
 
     if (filteredOptions.isNotEmpty) {
-      return DropdownButton<String>(
-        value: selectedReliureOption ?? "Sélectionner un type de reliure",
-        onChanged: (newOption) {
-          setState(() {
-            selectedReliureOption = newOption;
-            final selectedProductOption = filteredOptions.firstWhere(
-              (option) => option.name == newOption,
-              orElse: () => ProductOptions("", 0.0, "", ""),
-            );
+      return Padding(
+        padding: const EdgeInsets.only(left: 4.0),
+        child: DropdownButton<String>(
+          value: selectedReliureOption ?? "Sélectionner un type de reliure",
+          onChanged: (newOption) {
+            setState(() {
+              selectedReliureOption = newOption;
+              final selectedProductOption = filteredOptions.firstWhere(
+                (option) => option.name == newOption,
+                orElse: () => ProductOptions("", 0.0, "", ""),
+              );
 
-            reliureName = selectedProductOption.name;
-            reliurePrice = selectedProductOption.prix;
-          });
-        },
-        items: filteredOptions
-            .map((option) => DropdownMenuItem<String>(
-                  value: option.name,
-                  child: Text(option.name),
-                ))
-            .toList(),
+              reliureName = selectedProductOption.name;
+              reliurePrice = selectedProductOption.prix;
+            });
+          },
+          items: filteredOptions
+              .map((option) => DropdownMenuItem<String>(
+                    value: option.name,
+                    child: Text(option.name),
+                  ))
+              .toList(),
+        ),
       );
     } else {
       return const SizedBox.shrink();
@@ -194,27 +197,30 @@ class _ProductPageState extends State<ProductPage> {
       return Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          DropdownButton<String>(
-            value: selectedPremierePageOption ??
-                "Sélectionner un type de 1ère page",
-            onChanged: (newOption) {
-              setState(() {
-                selectedPremierePageOption = newOption;
-                final selectedProductOption = filteredOptions.firstWhere(
-                  (option) => option.name == newOption,
-                  orElse: () => ProductOptions("", 0.0, "", ""),
-                );
+          Padding(
+            padding: const EdgeInsets.only(left: 4.0),
+            child: DropdownButton<String>(
+              value: selectedPremierePageOption ??
+                  "Sélectionner un type de 1ère page",
+              onChanged: (newOption) {
+                setState(() {
+                  selectedPremierePageOption = newOption;
+                  final selectedProductOption = filteredOptions.firstWhere(
+                    (option) => option.name == newOption,
+                    orElse: () => ProductOptions("", 0.0, "", ""),
+                  );
 
-                premierepageName = selectedProductOption.name;
-                premierepagePrice = selectedProductOption.prix;
-              });
-            },
-            items: filteredOptions
-                .map((option) => DropdownMenuItem<String>(
-                      value: option.name,
-                      child: Text(option.name),
-                    ))
-                .toList(),
+                  premierepageName = selectedProductOption.name;
+                  premierepagePrice = selectedProductOption.prix;
+                });
+              },
+              items: filteredOptions
+                  .map((option) => DropdownMenuItem<String>(
+                        value: option.name,
+                        child: Text(option.name),
+                      ))
+                  .toList(),
+            ),
           ),
         ],
       );
@@ -234,26 +240,30 @@ class _ProductPageState extends State<ProductPage> {
       return Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          DropdownButton<String>(
-            value: selectedFinitionOption ?? "Sélectionner un type de finition",
-            onChanged: (newOption) {
-              setState(() {
-                selectedFinitionOption = newOption;
-                final selectedProductOption = filteredOptions.firstWhere(
-                  (option) => option.name == newOption,
-                  orElse: () => ProductOptions("", 0.0, "", ""),
-                );
+          Padding(
+            padding: const EdgeInsets.only(left: 4.0),
+            child: DropdownButton<String>(
+              value:
+                  selectedFinitionOption ?? "Sélectionner un type de finition",
+              onChanged: (newOption) {
+                setState(() {
+                  selectedFinitionOption = newOption;
+                  final selectedProductOption = filteredOptions.firstWhere(
+                    (option) => option.name == newOption,
+                    orElse: () => ProductOptions("", 0.0, "", ""),
+                  );
 
-                finitionName = selectedProductOption.name;
-                finitionPrice = selectedProductOption.prix;
-              });
-            },
-            items: filteredOptions
-                .map((option) => DropdownMenuItem<String>(
-                      value: option.name,
-                      child: Text(option.name),
-                    ))
-                .toList(),
+                  finitionName = selectedProductOption.name;
+                  finitionPrice = selectedProductOption.prix;
+                });
+              },
+              items: filteredOptions
+                  .map((option) => DropdownMenuItem<String>(
+                        value: option.name,
+                        child: Text(option.name),
+                      ))
+                  .toList(),
+            ),
           ),
         ],
       );
@@ -273,27 +283,30 @@ class _ProductPageState extends State<ProductPage> {
       return Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          DropdownButton<String>(
-            value: selectedCouleurCouvertureOption ??
-                "Sélectionner une couleur de couverture",
-            onChanged: (newOption) {
-              setState(() {
-                selectedCouleurCouvertureOption = newOption;
-                final selectedProductOption = filteredOptions.firstWhere(
-                  (option) => option.name == newOption,
-                  orElse: () => ProductOptions("", 0.0, "", ""),
-                );
+          Padding(
+            padding: const EdgeInsets.only(left: 4.0),
+            child: DropdownButton<String>(
+              value: selectedCouleurCouvertureOption ??
+                  "Sélectionner une couleur de couverture",
+              onChanged: (newOption) {
+                setState(() {
+                  selectedCouleurCouvertureOption = newOption;
+                  final selectedProductOption = filteredOptions.firstWhere(
+                    (option) => option.name == newOption,
+                    orElse: () => ProductOptions("", 0.0, "", ""),
+                  );
 
-                couleurCouvertureName = selectedProductOption.name;
-                couleurCouverturePrice = selectedProductOption.prix;
-              });
-            },
-            items: filteredOptions
-                .map((option) => DropdownMenuItem<String>(
-                      value: option.name,
-                      child: Text(option.name),
-                    ))
-                .toList(),
+                  couleurCouvertureName = selectedProductOption.name;
+                  couleurCouverturePrice = selectedProductOption.prix;
+                });
+              },
+              items: filteredOptions
+                  .map((option) => DropdownMenuItem<String>(
+                        value: option.name,
+                        child: Text(option.name),
+                      ))
+                  .toList(),
+            ),
           ),
         ],
       );
@@ -306,65 +319,71 @@ class _ProductPageState extends State<ProductPage> {
     if (!isCouvertureCouleur) {
       couverturePrice = couvertureNoirEtBlancPrice;
     }
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text("Couverture n/b 7€"),
-        Radio(
-          value: false,
-          groupValue: isCouvertureCouleur,
-          onChanged: (value) {
-            setState(() {
-              isCouvertureCouleur = false;
-              couverturePrice = couvertureNoirEtBlancPrice;
-              String couverturePapierName = "Noir et blanc";
-            });
-          },
-        ),
-        const Text("Couverture couleur 9€"),
-        Radio(
-          value: true,
-          groupValue: isCouvertureCouleur,
-          onChanged: (value) {
-            setState(() {
-              isCouvertureCouleur = true;
-              couverturePrice = couvertureCouleurPrice;
-              String couverturePapierName = "Couleur";
-            });
-          },
-        ),
-      ],
+    return Padding(
+      padding: const EdgeInsets.only(left: 4.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text("Couverture n/b 7€"),
+          Radio(
+            value: false,
+            groupValue: isCouvertureCouleur,
+            onChanged: (value) {
+              setState(() {
+                isCouvertureCouleur = false;
+                couverturePrice = couvertureNoirEtBlancPrice;
+                String couverturePapierName = "Noir et blanc";
+              });
+            },
+          ),
+          const Text("Couverture couleur 9€"),
+          Radio(
+            value: true,
+            groupValue: isCouvertureCouleur,
+            onChanged: (value) {
+              setState(() {
+                isCouvertureCouleur = true;
+                couverturePrice = couvertureCouleurPrice;
+                String couverturePapierName = "Couleur";
+              });
+            },
+          ),
+        ],
+      ),
     );
   }
 
   Widget radioPapierCouverture() {
     const Text("Le papier de couverture est inclus");
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text("Papier blanc (défaut)"),
-        Radio(
-          value: false,
-          groupValue: isCouverturePapierIvoire,
-          onChanged: (value) {
-            setState(() {
-              isCouverturePapierIvoire = false;
-              String couvertureName = "Papier blanc";
-            });
-          },
-        ),
-        const Text("Papier Ivoire"),
-        Radio(
-          value: true,
-          groupValue: isCouverturePapierIvoire,
-          onChanged: (value) {
-            setState(() {
-              isCouverturePapierIvoire = true;
-              String couvertureName = "Papier Ivoire";
-            });
-          },
-        ),
-      ],
+    return Padding(
+      padding: const EdgeInsets.only(left: 4.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text("Papier blanc (défaut)"),
+          Radio(
+            value: false,
+            groupValue: isCouverturePapierIvoire,
+            onChanged: (value) {
+              setState(() {
+                isCouverturePapierIvoire = false;
+                String couvertureName = "Papier blanc";
+              });
+            },
+          ),
+          const Text("Papier Ivoire"),
+          Radio(
+            value: true,
+            groupValue: isCouverturePapierIvoire,
+            onChanged: (value) {
+              setState(() {
+                isCouverturePapierIvoire = true;
+                String couvertureName = "Papier Ivoire";
+              });
+            },
+          ),
+        ],
+      ),
     );
   }
 
@@ -436,78 +455,87 @@ class _ProductPageState extends State<ProductPage> {
                   ],
                 ),
               ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const Text(
-                    "Nombre de pages : ",
-                    style: TextStyle(
-                      fontSize: 16,
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Flexible(
-                    child: SizedBox(
-                      width: 50,
-                      child: TextField(
-                        controller: numberOfPagesController,
-                        keyboardType: TextInputType.number,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly
-                        ],
-                        decoration: const InputDecoration(
-                          hintText: "1",
-                        ),
-                        onChanged: (value) {
-                          setState(() {
-                            int numberOfPages = int.tryParse(value) ?? 0;
-                            double unitPrice = widget.prix;
-                            if (numberOfPages < 1) {
-                              isNumberOfPagesValid = false;
-                            } else {
-                              isNumberOfPagesValid = true;
-                            }
-                            totalPrice = numberOfPages * unitPrice;
-                            if (numberOfPagesController.text.isEmpty) {
-                              isNumberOfCopiesValid = false;
-                            }
-                          });
-                        },
+              Padding(
+                padding: const EdgeInsets.only(left: 4.0),
+                child: Row(
+                  children: [
+                    const Text(
+                      "Nombre de pages : ",
+                      style: TextStyle(
+                        fontSize: 16,
                       ),
                     ),
-                  ),
-                ],
+                    const SizedBox(width: 10),
+                    Flexible(
+                      child: SizedBox(
+                        width: 50,
+                        child: TextField(
+                          controller: numberOfPagesController,
+                          keyboardType: TextInputType.number,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly
+                          ],
+                          decoration: const InputDecoration(
+                            hintText: "0",
+                          ),
+                          onChanged: (value) {
+                            setState(() {
+                              int numberOfPages = int.tryParse(value) ?? 0;
+                              double unitPrice = widget.prix;
+                              if (numberOfPages < 1) {
+                                isNumberOfPagesValid = false;
+                              } else {
+                                isNumberOfPagesValid = true;
+                              }
+                              totalPrice = numberOfPages * unitPrice;
+                              if (numberOfPagesController.text.isEmpty) {
+                                isNumberOfCopiesValid = false;
+                              }
+                            });
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  const Text("Recto",
+              Padding(
+                padding: const EdgeInsets.only(left: 4.0),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    const Text(
+                      "Recto",
                       style: TextStyle(
                         fontSize: 16,
-                      )),
-                  Radio(
-                    value: false,
-                    groupValue: isRectoVerso,
-                    onChanged: (value) {
-                      setState(() {
-                        isRectoVerso = false;
-                      });
-                    },
-                  ),
-                  const Text("Recto/Verso",
+                      ),
+                    ),
+                    Radio(
+                      value: false,
+                      groupValue: isRectoVerso,
+                      onChanged: (value) {
+                        setState(() {
+                          isRectoVerso = false;
+                        });
+                      },
+                    ),
+                    const Text(
+                      "Recto/Verso",
                       style: TextStyle(
                         fontSize: 16,
-                      )),
-                  Radio(
-                    value: true,
-                    groupValue: isRectoVerso,
-                    onChanged: (value) {
-                      setState(() {
-                        isRectoVerso = true;
-                      });
-                    },
-                  ),
-                ],
+                      ),
+                    ),
+                    Radio(
+                      value: true,
+                      groupValue: isRectoVerso,
+                      onChanged: (value) {
+                        setState(() {
+                          isRectoVerso = true;
+                        });
+                      },
+                    ),
+                  ],
+                ),
               ),
               if (productoptions
                   .any((option) => option.categorieoptionname == "Reliure"))
@@ -525,52 +553,55 @@ class _ProductPageState extends State<ProductPage> {
               if (productoptions
                   .any((option) => option.categorieid == "Thèses & Mémoires"))
                 radioPapierCouverture(),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const Text(
-                    "Nombre d'exemplaires : ",
-                    style: TextStyle(
-                      fontSize: 16,
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Flexible(
-                    child: SizedBox(
-                      width: 50,
-                      child: TextField(
-                        controller: numberOfCopiesController,
-                        keyboardType: TextInputType.number,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly
-                        ],
-                        decoration: const InputDecoration(
-                          hintText: "1",
-                        ),
-                        enabled: numberOfPagesController.text.isNotEmpty,
-                        onChanged: (value) {
-                          setState(() {
-                            int numberOfPages =
-                                int.tryParse(numberOfPagesController.text) ?? 0;
-                            int numberOfCopies = int.tryParse(value) ?? 0;
-                            double unitPrice = widget.prix;
-                            if (numberOfCopies < 1) {
-                              isNumberOfCopiesValid = false;
-                            } else {
-                              isNumberOfCopiesValid = true;
-                            }
-                            totalPrice =
-                                numberOfPages * unitPrice * numberOfCopies;
-
-                            if (numberOfPagesController.text.isEmpty) {
-                              isNumberOfCopiesValid = false;
-                            }
-                          });
-                        },
+              Padding(
+                padding: const EdgeInsets.only(left: 4.0),
+                child: Row(
+                  children: [
+                    const Text(
+                      "Nombre d'exemplaires : ",
+                      style: TextStyle(
+                        fontSize: 16,
                       ),
                     ),
-                  ),
-                ],
+                    const SizedBox(width: 10),
+                    Flexible(
+                      child: SizedBox(
+                        width: 50,
+                        child: TextField(
+                          controller: numberOfCopiesController,
+                          keyboardType: TextInputType.number,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly
+                          ],
+                          decoration: const InputDecoration(
+                            hintText: "0",
+                          ),
+                          enabled: numberOfPagesController.text.isNotEmpty,
+                          onChanged: (value) {
+                            setState(() {
+                              int numberOfPages =
+                                  int.tryParse(numberOfPagesController.text) ??
+                                      0;
+                              int numberOfCopies = int.tryParse(value) ?? 0;
+                              double unitPrice = widget.prix;
+                              if (numberOfCopies < 1) {
+                                isNumberOfCopiesValid = false;
+                              } else {
+                                isNumberOfCopiesValid = true;
+                              }
+                              totalPrice =
+                                  numberOfPages * unitPrice * numberOfCopies;
+
+                              if (numberOfPagesController.text.isEmpty) {
+                                isNumberOfCopiesValid = false;
+                              }
+                            });
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
               if (!isNumberOfCopiesValid)
                 const Text(
