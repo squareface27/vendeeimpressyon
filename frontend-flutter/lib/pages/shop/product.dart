@@ -229,6 +229,25 @@ class _ProductPageState extends State<ProductPage> {
     }
   }
 
+  Widget couvertureText() {
+    return const Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Padding(
+          padding: EdgeInsets.only(left: 4.0, bottom: 16.0),
+          child: Text(
+            'Couverture',
+            style: TextStyle(
+              fontSize: 16.0,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget buildDropdownFinition() {
     final filteredOptions = productoptions
         .where((option) =>
@@ -547,6 +566,9 @@ class _ProductPageState extends State<ProductPage> {
               if (productoptions
                   .any((option) => option.categorieoptionname == "Finition"))
                 buildDropdownFinition(),
+              if (productoptions
+                  .any((option) => option.categorieid == "Thèses & Mémoires"))
+                couvertureText(),
               if (productoptions
                   .any((option) => option.categorieid == "Thèses & Mémoires"))
                 radioCouverture(),
