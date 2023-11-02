@@ -23,7 +23,7 @@ class Vacance extends StatelessWidget {
               right: 0,
               child: Center(
                 child: Text(
-                  "L'application est indisponible",
+                  "Nous sommes actuellement en congé, merci de revenir ultérieurement",
                   style: TextStyle(
                     color: black,
                     fontSize: 25.0,
