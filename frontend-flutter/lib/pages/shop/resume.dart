@@ -89,6 +89,8 @@ class _ResumePageState extends State<ResumePage> {
   String currentPromoCode = "";
   double currentPromoAmount = 0;
 
+  double prixInitiale = 0;
+
   Future<void> fetchFraisData() async {
     final apiUrl = dotenv.env['API_URL_GET_FRAIS']!;
     final response = await http.get(Uri.parse(apiUrl));
@@ -103,6 +105,7 @@ class _ResumePageState extends State<ResumePage> {
       }
 
       setState(() {
+        prixInitiale = widget.totalPrice;
         reductionCommandeInternet = (widget.totalPrice *
                 (fraisData["Réduction Commande Internet"] / 100))
             .toDouble();
@@ -159,15 +162,24 @@ class _ResumePageState extends State<ResumePage> {
     fetchFraisData();
   }
 
+  bool internetReductionApplied = true;
+
   void applyPromoCode() async {
+    // Réinitialise les messages d'erreur et de succès.
     errorMessage = "";
     successMessage = "";
 
+    // Récupère le code promo entré par l'utilisateur et le met en minuscules.
     promoCode = codePromoController.text.toLowerCase();
 
     if (promoCode == currentPromoCode) {
+      // Si le code promo correspond au code promo actuel, supprime le code promo.
       setState(() {
-        widget.totalPrice = widget.totalPrice / (1 - currentPromoAmount);
+        if (!internetReductionApplied) {
+          widget.totalPrice =
+              prixInitiale - reductionCommandeInternet + fraisGestion;
+          internetReductionApplied = true;
+        }
       });
 
       currentPromoCode = "";
@@ -177,30 +189,41 @@ class _ResumePageState extends State<ResumePage> {
 
       errorMessage = "Code promo supprimé.";
     } else if (currentPromoCode.isEmpty) {
+      // Si aucun code promo n'est actuellement appliqué.
       final response = await http.get(Uri.parse(apiUrl));
 
       if (response.statusCode == 200) {
+        // Si la requête API réussit (code 200), récupère la liste des codes promo.
         final List<dynamic> promoCodes = json.decode(response.body);
 
+        // Cherche le code promo dans la liste.
         final promo = promoCodes.firstWhere(
           (promo) => promo['code'].toLowerCase() == promoCode,
           orElse: () => null,
         );
 
         if (promo != null) {
+          // Si le code promo est trouvé.
           final double reduction = promo['montant'] / 100;
-          montantReduction = widget.totalPrice * reduction;
 
           if (reduction > 0) {
             if (widget.totalPrice > 0) {
-              final double montantReduction = widget.totalPrice * reduction;
+              // Calcule le montant de la réduction.
+              montantReduction = prixInitiale * reduction;
 
               if (montantReduction < widget.totalPrice) {
+                // Applique le code promo et met à jour le prix total.
                 currentPromoCode = promoCode;
                 currentPromoAmount = reduction;
 
                 setState(() {
-                  widget.totalPrice = widget.totalPrice - montantReduction;
+                  if (internetReductionApplied) {
+                    widget.totalPrice =
+                        widget.totalPrice + reductionCommandeInternet;
+                    internetReductionApplied = false;
+                  }
+                  widget.totalPrice =
+                      prixInitiale - montantReduction + fraisGestion;
                 });
 
                 codePromoController.clear();
