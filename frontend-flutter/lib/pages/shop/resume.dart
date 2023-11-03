@@ -67,6 +67,8 @@ class _ResumePageState extends State<ResumePage> {
 
   double montantReduction = 0.0;
   double reductionCommandeInternet = 0.0;
+  double tvaBase = 0.0;
+  double tvaThese = 0.0;
   double fraisGestion = 0.0;
 
   int paymentCount = 0;
@@ -109,15 +111,16 @@ class _ResumePageState extends State<ResumePage> {
         reductionCommandeInternet = (widget.totalPrice *
                 (fraisData["Réduction Commande Internet"] / 100))
             .toDouble();
+        tvaBase = (fraisData["TVA de base"] / 100);
+        tvaThese = (fraisData["TVA Thèses & Mémoires"] / 100);
         fraisGestion = fraisData["Frais de Gestion"].toDouble();
 
         if (widget.categorieid == "Thèses & Mémoires") {
           // Applique la TVA réduite de 5,5%
           widget.totalPrice =
               widget.totalPrice - reductionCommandeInternet + fraisGestion;
-          widget.totalPrice = widget.totalPrice / (1 + 0.2);
-          widget.totalPrice = widget.totalPrice * (1 + 0.055);
-          print(widget.totalPrice);
+          widget.totalPrice = widget.totalPrice / (1 + tvaBase);
+          widget.totalPrice = widget.totalPrice * (1 + tvaThese);
         } else {
           widget.totalPrice =
               widget.totalPrice - reductionCommandeInternet + fraisGestion;

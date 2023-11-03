@@ -18,7 +18,6 @@ class CodePromoEntityCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         return [
-            BooleanField::new('activation')->setLabel('Activer le code promo'),
             TextField::new('code'),
             NumberField::new('montant')->setLabel('montant (%)'),
         ];
