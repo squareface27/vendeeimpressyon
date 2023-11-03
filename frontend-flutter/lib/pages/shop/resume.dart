@@ -124,32 +124,18 @@ class _ResumePageState extends State<ResumePage> {
       'pdfName': pdfName,
     };
 
-    final jsonData = jsonEncode(data);
+    jsonEncode(data);
 
     if (selectedPdfPath.isNotEmpty) {
-      try {
-        var request = http.MultipartRequest('POST', Uri.parse(apiUrlPdf));
-        request.fields['pdfName'] = pdfName;
-        request.files.add(
-          await http.MultipartFile.fromPath(
-            'pdf',
-            selectedPdfPath,
-          ),
-        );
-
-        var response = await request.send();
-        if (response.statusCode == 200) {
-          print('Fichier PDF envoyé avec succès');
-        } else {
-          print(
-              'Échec de l\'envoi du fichier PDF avec statut ${response.statusCode}');
-          // Afficher le contenu de la réponse (pour débogage)
-          final responseString = await response.stream.bytesToString();
-          print('Réponse : $responseString');
-        }
-      } catch (e) {
-        print('Erreur lors de l\'envoi du fichier PDF : $e');
-      }
+      var request = http.MultipartRequest('POST', Uri.parse(apiUrlPdf));
+      request.fields['pdfName'] = pdfName;
+      request.files.add(
+        await http.MultipartFile.fromPath(
+          'pdf',
+          selectedPdfPath,
+        ),
+      );
+      await request.send();
     }
   }
 
@@ -383,26 +369,22 @@ class _ResumePageState extends State<ResumePage> {
   }
 
   Future<void> makePayment() async {
-    try {
-      final totalPriceString = (widget.totalPrice * 100).toStringAsFixed(0);
-      paymentIntent = await createPaymentIntent(totalPriceString, 'EUR');
+    final totalPriceString = (widget.totalPrice * 100).toStringAsFixed(0);
+    paymentIntent = await createPaymentIntent(totalPriceString, 'EUR');
 
-      var gpay = const PaymentSheetGooglePay(
-          merchantCountryCode: "FR", currencyCode: "EUR", testEnv: true);
+    var gpay = const PaymentSheetGooglePay(
+        merchantCountryCode: "FR", currencyCode: "EUR", testEnv: true);
 
-      await Stripe.instance
-          .initPaymentSheet(
-              paymentSheetParameters: SetupPaymentSheetParameters(
-                  paymentIntentClientSecret: paymentIntent!['client_secret'],
-                  style: ThemeMode.dark,
-                  merchantDisplayName: 'Vendée Impress\'Yon',
-                  googlePay: gpay))
-          .then((value) {});
+    await Stripe.instance
+        .initPaymentSheet(
+            paymentSheetParameters: SetupPaymentSheetParameters(
+                paymentIntentClientSecret: paymentIntent!['client_secret'],
+                style: ThemeMode.dark,
+                merchantDisplayName: 'Vendée Impress\'Yon',
+                googlePay: gpay))
+        .then((value) {});
 
-      displayPaymentSheet();
-    } catch (err) {
-      print(err);
-    }
+    displayPaymentSheet();
   }
 
   void resetPaymentCount() {
@@ -412,64 +394,54 @@ class _ResumePageState extends State<ResumePage> {
   }
 
   displayPaymentSheet() async {
-    try {
-      await Stripe.instance.presentPaymentSheet().then((value) async {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (context) => PaymentSuccessPage(
-              email: widget.email,
-              categorieid: widget.categorieid,
-            ),
+    await Stripe.instance.presentPaymentSheet().then((value) async {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => PaymentSuccessPage(
+            email: widget.email,
+            categorieid: widget.categorieid,
           ),
-        );
-        uploadPdfToBackend();
-        paymentCount++;
-        final pdfName = widget.pdfFileName;
-        final productName = widget.productName;
-        final totalPrice = widget.totalPrice;
-        final nombreExemplaire = widget.numberOfCopies;
-        final email = widget.email;
-        final reliureName = widget.reliureName;
-        final couleurCouvertureName = widget.couleurCouvertureName;
-        final premierepageName = widget.premierepageName;
-        final finitionName = widget.finitionName;
-        final couvertureName = widget.couvertureName;
-        final couverturePapierName = widget.couverturePapierName;
-        final numberOfPages = widget.numberOfPages;
-        final dateTimeNow =
-            DateFormat('dd-MM-yyyy HH:mm:ss').format(DateTime.now());
+        ),
+      );
+      uploadPdfToBackend();
+      paymentCount++;
+      final pdfName = widget.pdfFileName;
+      final productName = widget.productName;
+      final totalPrice = widget.totalPrice;
+      final nombreExemplaire = widget.numberOfCopies;
+      final email = widget.email;
+      final reliureName = widget.reliureName;
+      final couleurCouvertureName = widget.couleurCouvertureName;
+      final premierepageName = widget.premierepageName;
+      final finitionName = widget.finitionName;
+      final couvertureName = widget.couvertureName;
+      final couverturePapierName = widget.couverturePapierName;
+      final numberOfPages = widget.numberOfPages;
+      final dateTimeNow =
+          DateFormat('dd-MM-yyyy HH:mm:ss').format(DateTime.now());
 
-        final paymentInfo = {
-          'id': paymentCount,
-          'email': email,
-          'productName': productName,
-          'totalPrice': totalPrice,
-          'date': dateTimeNow,
-          'quantite': nombreExemplaire,
-          'nombrePage': numberOfPages,
-          'reliureName': reliureName,
-          'couleurCouvertureName': couleurCouvertureName,
-          'premierepageName': premierepageName,
-          'finitionName': finitionName,
-          'couvertureName': couvertureName,
-          'couverturePapierName': couverturePapierName,
-          'pdfName': pdfName,
-        };
+      final paymentInfo = {
+        'id': paymentCount,
+        'email': email,
+        'productName': productName,
+        'totalPrice': totalPrice,
+        'date': dateTimeNow,
+        'quantite': nombreExemplaire,
+        'nombrePage': numberOfPages,
+        'reliureName': reliureName,
+        'couleurCouvertureName': couleurCouvertureName,
+        'premierepageName': premierepageName,
+        'finitionName': finitionName,
+        'couvertureName': couvertureName,
+        'couverturePapierName': couverturePapierName,
+        'pdfName': pdfName,
+      };
 
-        final jsonData = json.encode(paymentInfo);
+      final jsonData = json.encode(paymentInfo);
 
-        final response = await http.post(Uri.parse(apiUrlCommandeInfos),
-            headers: {'Content-Type': 'application/json'}, body: jsonData);
-
-        if (response.statusCode == 200) {
-          print('Données envoyées avec succès à votre API.');
-        } else {
-          print('Échec de l\'envoi des données à votre API.');
-        }
-      });
-    } catch (e) {
-      print('$e');
-    }
+      await http.post(Uri.parse(apiUrlCommandeInfos),
+          headers: {'Content-Type': 'application/json'}, body: jsonData);
+    });
   }
 
   createPaymentIntent(String amount, String currency) async {
