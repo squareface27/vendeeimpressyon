@@ -57,9 +57,12 @@ class _PaymentSuccessPageState extends State<PaymentSuccessPage> {
             ],
           ),
           const SizedBox(height: 20),
-          Text(
-            'Estimation du temps pour réaliser la commande: $dureeRealisation',
-            style: const TextStyle(fontSize: 16),
+          Padding(
+            padding: const EdgeInsets.only(left: 4.0),
+            child: Text(
+              'Estimation du temps pour réaliser la commande: $dureeRealisation',
+              style: const TextStyle(fontSize: 16),
+            ),
           ),
           const SizedBox(height: 40),
           ElevatedButton(
