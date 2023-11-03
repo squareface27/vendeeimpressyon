@@ -110,8 +110,18 @@ class _ResumePageState extends State<ResumePage> {
                 (fraisData["Réduction Commande Internet"] / 100))
             .toDouble();
         fraisGestion = fraisData["Frais de Gestion"].toDouble();
-        widget.totalPrice =
-            widget.totalPrice - reductionCommandeInternet + fraisGestion;
+
+        if (widget.categorieid == "Thèses & Mémoires") {
+          // Applique la TVA réduite de 5,5%
+          widget.totalPrice =
+              widget.totalPrice - reductionCommandeInternet + fraisGestion;
+          widget.totalPrice = widget.totalPrice / (1 + 0.2);
+          widget.totalPrice = widget.totalPrice * (1 + 0.055);
+          print(widget.totalPrice);
+        } else {
+          widget.totalPrice =
+              widget.totalPrice - reductionCommandeInternet + fraisGestion;
+        }
       });
     }
   }
