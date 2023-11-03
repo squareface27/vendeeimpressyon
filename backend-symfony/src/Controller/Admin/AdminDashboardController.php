@@ -15,6 +15,7 @@ use App\Entity\SaleshistoryEntity;
 use App\Entity\ProductOptionEntity;
 use App\Entity\EtablissementScolaireEntity;
 use App\Entity\CategoriesProductOptionEntity;
+use App\Entity\InfosEntrepriseEntity;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
@@ -36,6 +37,7 @@ class AdminDashboardController extends AbstractDashboardController
 
     public function configureMenuItems(): iterable
     {
+        yield MenuItem::linkToCrud('Information de l\'entreprise', 'fa fa-info-circle', InfosEntrepriseEntity::class);
         yield MenuItem::section('Établissements scolaires');
         yield MenuItem::linkToCrud('Liste des établissements', 'fa fa-building', EtablissementScolaireEntity::class);
         yield MenuItem::section('Boutique');

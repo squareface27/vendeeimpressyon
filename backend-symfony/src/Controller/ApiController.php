@@ -10,6 +10,7 @@ use Psr\Log\LoggerInterface;
 use App\Entity\ArticlesEntity;
 use App\Services\ApiAuthService;
 use Symfony\Component\Mime\Email;
+use Symfony\Polyfill\Intl\Idn\Info;
 use App\Repository\UserEntityRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\FraisEntityRepository;
@@ -19,15 +20,16 @@ use App\Repository\SettingsEntityRepository;
 use Symfony\Component\HttpClient\HttpClient;
 use App\Repository\CodePromoEntityRepository;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Mailer\MailerInterface;
 use App\Repository\CategoriesEntityRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Repository\ProductOptionEntityRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use App\Repository\InfosEntrepriseEntityRepository;
 use App\Repository\EtablissementScolaireEntityRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\Mailer\MailerInterface;
 
 class ApiController extends AbstractController
 {
@@ -306,7 +308,7 @@ class ApiController extends AbstractController
 
     // Création du PDF des factures
 
-    public function generateInvoice(Request $request, MailerInterface $mailer, EntityManagerInterface $entityManager)
+    public function generateInvoice(Request $request, MailerInterface $mailer, EntityManagerInterface $entityManager, InfosEntrepriseEntityRepository $Info)
 {
     $date = new DateTime();
     $annee = $date->format('Y');
@@ -351,6 +353,20 @@ class ApiController extends AbstractController
     $montantBrut = number_format($price / (1 + 0.20), 2);
 
     $prixUnitaire = number_format($montantBrut / $quantite, 2);
+
+    $infoentreprise = $Info->findAll();
+
+        $data = [];
+        foreach ($infoentreprise as $infos) {
+            $nom = $infos->getNom();
+            $capital = $infos->getCapital();
+            $mail = $infos->getMail();
+            $tel = $infos->getTel();
+            $web = $infos->getWeb();
+            $rcs = $infos->getRcs();
+            $ville = $infos->getVille();
+            $tva = $infos->getTva();
+            $ape = $infos->getApe();
 
     $options = new Options();
     $options->set('isHtml5ParserEnabled', true);
@@ -431,9 +447,9 @@ class ApiController extends AbstractController
         <footer class="footer">
             <hr>
             <p style=font-size:15px;>
-                EURL GRAPHINET - VENDEE IMPRESS\'YON - EURL au capital de 45000€ - 488 506 494 RCS la Roche Sur Yon - N°TVA: FR38488506494 - APE : 8219Z
+            ' . $nom . ' au capital de ' .$capital .' - ' .$rcs .' RCS ' .$ville .' - N°TVA: ' .$tva .' - APE : ' .$ape .'
             </p>
-            <p style=font-size:13px;>Web : www.vendee-impressyon.fr - Email : vendee.impressyon@gmail.com - Tél : 02 51 98 08 58</p>
+            <p style=font-size:13px;>Web : ' .$web .' - Email : ' .$mail .' - Tél : ' .$tel .'</p>
         </footer>
     </body>
 </html>';
@@ -516,12 +532,12 @@ if (!empty($couverturePapierName)) {
 $htmlBonDeCommande .= '</ul>
     </div>
     <footer class="footer">
-        <hr>
-        <p style="font-size:15px;">
-            EURL GRAPHINET - VENDEE IMPRESS\'YON - EURL au capital de 45000€ - 488 506 494 RCS La Roche Sur Yon - N°TVA: FR38488506494 - APE : 8219Z
-        </p>
-        <p style="font-size:13px;">Web : www.vendee-impressyon.fr - Email : vendee.impressyon@gmail.com - Tél : 02 51 98 08 58</p>
-    </footer>
+            <hr>
+            <p style=font-size:15px;>
+            ' . $nom . ' au capital de ' .$capital .' - ' .$rcs .' RCS ' .$ville .' - N°TVA: ' .$tva .' - APE : ' .$ape .'
+            </p>
+            <p style=font-size:13px;>Web : ' .$web .' - Email : ' .$mail .' - Tél : ' .$tel .'</p>
+        </footer>
 </body>
 </html>';
 
@@ -552,6 +568,6 @@ $htmlBonDeCommande .= '</ul>
 
     return new JsonResponse(['message' => 'Facture générée et envoyée avec succès']);
 
+        }
+    }
 }
-}
-
