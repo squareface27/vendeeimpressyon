@@ -83,6 +83,7 @@ class _ProductPageState extends State<ProductPage> {
                 item['prix'].toDouble(),
                 item['categorieOptionName'],
                 item['categorieid'])));
+
         productoptions.insert(
             0,
             ProductOptions(
@@ -134,16 +135,14 @@ class _ProductPageState extends State<ProductPage> {
   Future<void> pickAndProcessPdf() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
-      allowedExtensions: ['pdf', 'docx', 'odt'],
+      allowedExtensions: ['pdf'],
     );
 
     if (result != null) {
       String pdfPath = result.files.single.path!;
       setState(() {
         selectedPdfPath = pdfPath;
-        isPdfSelected = pdfPath.endsWith('.pdf') ||
-            pdfPath.endsWith('.docx') ||
-            pdfPath.endsWith('.odt');
+        isPdfSelected = pdfPath.endsWith('.pdf');
         selectedPdfFileName = selectedPdfPath.split('/').last;
       });
     }
@@ -160,6 +159,7 @@ class _ProductPageState extends State<ProductPage> {
       return Padding(
         padding: const EdgeInsets.only(left: 4.0),
         child: DropdownButton<String>(
+          isExpanded: true,
           value: selectedReliureOption ?? "Sélectionner un type de reliure",
           onChanged: (newOption) {
             setState(() {
@@ -256,35 +256,30 @@ class _ProductPageState extends State<ProductPage> {
         .toList();
 
     if (filteredOptions.isNotEmpty) {
-      return Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 4.0),
-            child: DropdownButton<String>(
-              value:
-                  selectedFinitionOption ?? "Sélectionner un type de finition",
-              onChanged: (newOption) {
-                setState(() {
-                  selectedFinitionOption = newOption;
-                  final selectedProductOption = filteredOptions.firstWhere(
-                    (option) => option.name == newOption,
-                    orElse: () => ProductOptions("", 0.0, "", ""),
-                  );
+      return Padding(
+        padding: const EdgeInsets.only(left: 4.0),
+        child: DropdownButton<String>(
+          isExpanded: true,
+          value: selectedFinitionOption ?? "Sélectionner un type de finition",
+          onChanged: (newOption) {
+            setState(() {
+              selectedFinitionOption = newOption;
+              final selectedProductOption = filteredOptions.firstWhere(
+                (option) => option.name == newOption,
+                orElse: () => ProductOptions("", 0.0, "", ""),
+              );
 
-                  finitionName = selectedProductOption.name;
-                  finitionPrice = selectedProductOption.prix;
-                });
-              },
-              items: filteredOptions
-                  .map((option) => DropdownMenuItem<String>(
-                        value: option.name,
-                        child: Text(option.name),
-                      ))
-                  .toList(),
-            ),
-          ),
-        ],
+              finitionName = selectedProductOption.name;
+              finitionPrice = selectedProductOption.prix;
+            });
+          },
+          items: filteredOptions
+              .map((option) => DropdownMenuItem<String>(
+                    value: option.name,
+                    child: Text(option.name),
+                  ))
+              .toList(),
+        ),
       );
     } else {
       return const SizedBox.shrink();
@@ -332,44 +327,6 @@ class _ProductPageState extends State<ProductPage> {
     } else {
       return const SizedBox.shrink();
     }
-  }
-
-  Widget radioCouverture() {
-    if (!isCouvertureCouleur) {
-      couverturePrice = couvertureNoirEtBlancPrice;
-    }
-    return Padding(
-      padding: const EdgeInsets.only(left: 4.0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text("Couverture n/b 7€"),
-          Radio(
-            value: false,
-            groupValue: isCouvertureCouleur,
-            onChanged: (value) {
-              setState(() {
-                isCouvertureCouleur = false;
-                couverturePrice = couvertureNoirEtBlancPrice;
-                String couverturePapierName = "Noir et blanc";
-              });
-            },
-          ),
-          const Text("Couverture couleur 9€"),
-          Radio(
-            value: true,
-            groupValue: isCouvertureCouleur,
-            onChanged: (value) {
-              setState(() {
-                isCouvertureCouleur = true;
-                couverturePrice = couvertureCouleurPrice;
-                String couverturePapierName = "Couleur";
-              });
-            },
-          ),
-        ],
-      ),
-    );
   }
 
   Widget radioPapierCouverture() {
@@ -567,13 +524,10 @@ class _ProductPageState extends State<ProductPage> {
                   .any((option) => option.categorieoptionname == "Finition"))
                 buildDropdownFinition(),
               if (productoptions
-                  .any((option) => option.categorieid == "Thèses & Mémoires"))
+                  .any((option) => widget.categorieid == "Thèses & Mémoires"))
                 couvertureText(),
               if (productoptions
-                  .any((option) => option.categorieid == "Thèses & Mémoires"))
-                radioCouverture(),
-              if (productoptions
-                  .any((option) => option.categorieid == "Thèses & Mémoires"))
+                  .any((option) => widget.categorieid == "Thèses & Mémoires"))
                 radioPapierCouverture(),
               Padding(
                 padding: const EdgeInsets.only(left: 4.0),
