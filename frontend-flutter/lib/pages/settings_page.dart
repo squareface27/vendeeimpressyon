@@ -74,17 +74,6 @@ class _SettingsState extends State<Settings> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Text("Sécurité", style: headingStyle),
-                        ],
-                      ),
-                      const Divider(),
-                      const ListTile(
-                        leading: Icon(Icons.lock),
-                        title: Text("Changer de Mot de Passe"),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
                           Text("Autre", style: headingStyle),
                         ],
                       ),
@@ -97,12 +86,29 @@ class _SettingsState extends State<Settings> {
                           launchUrl(cgvUrl);
                         },
                       ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text("Nous Contacter", style: headingStyle),
+                        ],
+                      ),
+                      const Divider(),
                       ListTile(
                         leading: const Icon(Icons.phone),
-                        title: const Text("Nous contacter"),
+                        title: const Text("Téléphone"),
                         onTap: () {
                           final cgvUrl = Uri(scheme: 'tel', path: '0251980858');
                           launchUrl(cgvUrl);
+                        },
+                      ),
+                      ListTile(
+                        leading: const Icon(Icons.mail),
+                        title: const Text("E-Mail"),
+                        onTap: () {
+                          final mail = Uri(
+                              scheme: 'mailto',
+                              path: 'etudiant.impressyon@gmail.com');
+                          launchUrl(mail);
                         },
                       ),
                     ],
