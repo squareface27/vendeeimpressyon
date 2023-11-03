@@ -23,7 +23,6 @@ class ArticlesEntityCrudController extends AbstractCrudController
     {
         return [
             TextField::new('name')->setLabel('Article'),
-            TextField::new('description')->setLabel('Description'),
             NumberField::new('unitprice')->setLabel('Prix unitaire (€ / page)'),
             AssociationField::new('category', 'Catégorie')
                 ->formatValue(function ($value, $entity) {

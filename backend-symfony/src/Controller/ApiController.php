@@ -175,7 +175,6 @@ class ApiController extends AbstractController
 
             $data[] = [
             'name' => $name,
-            'description' => $description,
             'unitprice' => $price,
             'image' => $image,
             'categorieid' => $categorieId,
