@@ -16,6 +16,7 @@ use App\Entity\ProductOptionEntity;
 use App\Entity\EtablissementScolaireEntity;
 use App\Entity\CategoriesProductOptionEntity;
 use App\Entity\InfosEntrepriseEntity;
+use App\Entity\MentionsLegalesEntity;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
@@ -50,6 +51,7 @@ class AdminDashboardController extends AbstractDashboardController
         yield MenuItem::section('Paramètres de la boutique');
         yield MenuItem::linkToCrud('Paramètres', 'fa fa-cog', SettingsEntity::class);
         yield MenuItem::linkToCrud('Modifier les CGV', 'fa fa-file-text', CgvEntity::class);
+        yield MenuItem::linkToCrud('Modifier Mentions légales', 'fa fa-file-text', MentionsLegalesEntity::class);
         yield MenuItem::linkToCrud('Liste des frais', 'fa fa-credit-card-alt', FraisEntity::class);
         yield MenuItem::linkToCrud('Liste des administrateurs', 'fa fa-user', User::class);
     }

@@ -86,6 +86,16 @@ class _SettingsState extends State<Settings> {
                           launchUrl(cgvUrl);
                         },
                       ),
+                      const Divider(),
+                      ListTile(
+                        leading: const Icon(Icons.file_open_outlined),
+                        title: const Text("Mentions Légales"),
+                        onTap: () {
+                          final cgvUrl =
+                              Uri.parse(dotenv.env['MENTIONSLEGALES_URL']!);
+                          launchUrl(cgvUrl);
+                        },
+                      ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
