@@ -24,7 +24,6 @@ class ResumePage extends StatefulWidget {
   final String reliureName;
   final String finitionName;
   final String couvertureName;
-  final String couverturePapierName;
   final String selectedPdfPath;
   double totalPrice;
   final String email;
@@ -49,7 +48,6 @@ class ResumePage extends StatefulWidget {
     required this.premierepageName,
     required this.finitionName,
     required this.couvertureName,
-    required this.couverturePapierName,
     required this.selectedPdfPath,
     required this.categorieid,
   });
@@ -428,8 +426,9 @@ class _ResumePageState extends State<ResumePage> {
       final premierepageName = widget.premierepageName;
       final finitionName = widget.finitionName;
       final couvertureName = widget.couvertureName;
-      final couverturePapierName = widget.couverturePapierName;
       final numberOfPages = widget.numberOfPages;
+      final categorieid = widget.categorieid;
+      final rectoVerso = widget.isRectoVerso;
       final dateTimeNow =
           DateFormat('dd-MM-yyyy HH:mm:ss').format(DateTime.now());
 
@@ -446,8 +445,9 @@ class _ResumePageState extends State<ResumePage> {
         'premierepageName': premierepageName,
         'finitionName': finitionName,
         'couvertureName': couvertureName,
-        'couverturePapierName': couverturePapierName,
         'pdfName': pdfName,
+        'categorie': categorieid,
+        if (rectoVerso) 'rectoVerso': 'Oui' else 'rectoVerso': 'Non',
       };
 
       final jsonData = json.encode(paymentInfo);

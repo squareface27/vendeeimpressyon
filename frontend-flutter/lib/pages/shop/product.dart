@@ -51,12 +51,8 @@ class _ProductPageState extends State<ProductPage> {
   String? selectedPremierePageOption;
   String? selectedFinitionOption;
   String? selectedCouleurCouvertureOption;
-  String couvertureName = "Papier blanc";
-  String couverturePapierName = "Noir et blanc";
 
   bool isRectoVerso = false;
-
-  bool isCouvertureCouleur = false;
 
   bool isCouverturePapierIvoire = false;
 
@@ -127,6 +123,7 @@ class _ProductPageState extends State<ProductPage> {
   String couleurCouvertureName = "";
   String premierepageName = "";
   String finitionName = "";
+  String couvertureName = "";
 
   double couvertureCouleurPrice = 9.0;
   double couvertureNoirEtBlancPrice = 7.0;
@@ -286,57 +283,14 @@ class _ProductPageState extends State<ProductPage> {
     }
   }
 
-  Widget buildDropdownCouleurCouverture() {
-    final filteredOptions = productoptions
-        .where((option) =>
-            option.categorieoptionname == "CouleurCouverture" &&
-            option.categorieid == widget.categorieid)
-        .toList();
-
-    if (filteredOptions.isNotEmpty) {
-      return Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 4.0),
-            child: DropdownButton<String>(
-              value: selectedCouleurCouvertureOption ??
-                  "Sélectionner une couleur de couverture",
-              onChanged: (newOption) {
-                setState(() {
-                  selectedCouleurCouvertureOption = newOption;
-                  final selectedProductOption = filteredOptions.firstWhere(
-                    (option) => option.name == newOption,
-                    orElse: () => ProductOptions("", 0.0, "", ""),
-                  );
-
-                  couleurCouvertureName = selectedProductOption.name;
-                  couleurCouverturePrice = selectedProductOption.prix;
-                });
-              },
-              items: filteredOptions
-                  .map((option) => DropdownMenuItem<String>(
-                        value: option.name,
-                        child: Text(option.name),
-                      ))
-                  .toList(),
-            ),
-          ),
-        ],
-      );
-    } else {
-      return const SizedBox.shrink();
-    }
-  }
-
   Widget radioPapierCouverture() {
-    const Text("Le papier de couverture est inclus");
+    couvertureName = "Papier blanc";
     return Padding(
       padding: const EdgeInsets.only(left: 4.0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text("Papier blanc (défaut)"),
+          Text("Papier blanc (défaut)"),
           Radio(
             value: false,
             groupValue: isCouverturePapierIvoire,
@@ -344,10 +298,11 @@ class _ProductPageState extends State<ProductPage> {
               setState(() {
                 isCouverturePapierIvoire = false;
                 String couvertureName = "Papier blanc";
+                print(couvertureName);
               });
             },
           ),
-          const Text("Papier Ivoire"),
+          Text("Papier Ivoire"),
           Radio(
             value: true,
             groupValue: isCouverturePapierIvoire,
@@ -355,6 +310,7 @@ class _ProductPageState extends State<ProductPage> {
               setState(() {
                 isCouverturePapierIvoire = true;
                 String couvertureName = "Papier Ivoire";
+                print(couvertureName);
               });
             },
           ),
@@ -514,10 +470,6 @@ class _ProductPageState extends State<ProductPage> {
                 ),
               ),
               if (productoptions
-                  .any((option) => option.categorieoptionname == "Reliure"))
-                buildDropdownReliure(),
-              buildDropdownCouleurCouverture(),
-              if (productoptions
                   .any((option) => option.categorieoptionname == "1erePage"))
                 buildDropdownPremierePage(),
               if (productoptions
@@ -618,7 +570,6 @@ class _ProductPageState extends State<ProductPage> {
                               couverturePrice: couverturePrice,
                               couleurCouvertureName: couleurCouvertureName,
                               couleurCouverturePrice: couleurCouverturePrice,
-                              couverturePapierName: couverturePapierName,
                               totalPrice: totalPrice +
                                   reliurePrice +
                                   premierepagePrice +

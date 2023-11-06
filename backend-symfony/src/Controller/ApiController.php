@@ -308,7 +308,7 @@ class ApiController extends AbstractController
 
     // Création du PDF des factures
 
-    public function generateInvoice(Request $request, MailerInterface $mailer, EntityManagerInterface $entityManager, InfosEntrepriseEntityRepository $Info)
+    public function generateInvoice(Request $request, MailerInterface $mailer, EntityManagerInterface $entityManager, InfosEntrepriseEntityRepository $Info, LoggerInterface $logger)
 {
     $date = new DateTime();
     $annee = $date->format('Y');
@@ -330,9 +330,10 @@ class ApiController extends AbstractController
     $premierpageName = $data['premierepageName'];
     $finitionName = $data['finitionName'];
     $couvertureName = $data['couvertureName'];
-    $couverturePapierName = $data['couverturePapierName'];
     $nombrePage = $data['nombrePage'];
     $pdfName = $data['pdfName'];
+    $categorie = $data['categorie'];
+    $rectoVerso = $data['rectoVerso'];
 
     $userRepository = $entityManager->getRepository(UserEntity::class);
 
@@ -350,7 +351,7 @@ class ApiController extends AbstractController
     $numeroFactureFile = "FACTURE N° $annee-$mois-$id.pdf";
     $numeroCommandeFile = "COMMANDE N° $annee-$mois-$id.pdf";
 
-    $montantBrut = number_format($price / (1 + 0.20), 2);
+    $montantBrut = ($categorie === "Thèses & Mémoires") ? number_format($price / (1 + 0.055), 2) : number_format($price / (1 + 0.20), 2);
 
     $prixUnitaire = number_format($montantBrut / $quantite, 2);
 
@@ -425,22 +426,22 @@ class ApiController extends AbstractController
                     <th>Total</th>
                 </tr>
                 <tr>
-                    <td>' . $produit . '</td>
+                    <td>' . $categorie . ' - ' . $produit .'</td>
                     <td>' . number_format($prixUnitaire, 2) . '€</td>
                     <td>' . $quantite . '</td>
-                    <td>' . number_format($montantBrut * 1.2, 2) . ' €</td>
+                    <td>' . number_format($montantBrut * (($categorie === "Thèses & Mémoires") ? 1.055 : 1.2), 2) . ' €</td>
                 </tr>
                 <tr>
                     <td colspan="3">Sous-total HT</td>
                     <td>' . number_format($montantBrut, 2) . '€</td>
                 </tr>
                 <tr>
-                    <td colspan="3">TVA (20%)</td>
-                    <td>' . number_format($montantBrut * 0.2, 2) . ' €</td>
+                    <td colspan="3">TVA (' . (($categorie === "Thèses & Mémoires") ? "5.5%" : "20%") . ')</td>
+                    <td>' . number_format($montantBrut * (($categorie === "Thèses & Mémoires") ? 0.055 : 0.2), 2) . ' €</td>
                 </tr>
                 <tr>
                     <td colspan="3"><strong>Total</strong></td>
-                    <td><strong>' . number_format($montantBrut * 1.2, 2) . ' €</strong></td>
+                    <td><strong>' . number_format($montantBrut * (($categorie === "Thèses & Mémoires") ? 1.055 : 1.2), 2) . ' €</strong></td>
                 </tr>
             </table>
         </div>
@@ -453,6 +454,7 @@ class ApiController extends AbstractController
         </footer>
     </body>
 </html>';
+
 
     $dompdf->loadHtml($htmlFacture);
 
@@ -502,13 +504,14 @@ class ApiController extends AbstractController
         <h4> ' . $numeroCommande . '</h4>
         <hr>
         <br>
-        <h3>Produit : ' . $produit . '</h3>
+        <h3>Produit : ' . $categorie . ' - ' . $produit . '</h3>
         
         <h4>Options :</h4>
         <ul>';
 
         $htmlBonDeCommande .= '<li>Nombre de pages : ' . $nombrePage .' </li>';
         $htmlBonDeCommande .= '<li>Nombre d\'exemplaires : ' . $quantite .' </li>';
+        $htmlBonDeCommande .= '<li>Recto/Verso : ' . $rectoVerso .' </li>';
 
 if (!empty($reliureName)) {
     $htmlBonDeCommande .= '<li>Reliure : ' . $reliureName . '</li>';
@@ -524,9 +527,6 @@ if (!empty($finitionName)) {
 }
 if (!empty($couvertureName)) {
     $htmlBonDeCommande .= '<li>Type de couverture : ' . $couvertureName . '</li>';
-}
-if (!empty($couverturePapierName)) {
-    $htmlBonDeCommande .= '<li>Type de papier de couverture : ' . $couverturePapierName . '</li>';
 }
 
 $htmlBonDeCommande .= '</ul>
