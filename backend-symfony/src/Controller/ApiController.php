@@ -560,7 +560,7 @@ $htmlBonDeCommande .= '</ul>
         ->from('vendee.impressyon@gmail.com')
         ->to('etudiant.impressyon@gmail.com')
         ->subject('Nouvelle Commande de ' . $pseudo)
-        ->html('<a href="http://localhost/vendeeimpressyon/backend-symfony/public/pdf/'.$pdfName.'">Lien d\'accès au PDF</a>' . 
+        ->html('<a href="http://localhost/vendeeimpressyon/backend-symfony/public/pdf/'.$pdfName.'">Lien d\'accès au PDF</a><br>' . 
            '<br><a href="mailto:' . rawurlencode($email) . '?subject=' . rawurlencode($objetMail) . '&body=' . rawurlencode($message) . '">Prévenir le client que sa commande est prête</a>')
         ->attachFromPath($numeroCommandeFile)
         ->attachFromPath($numeroFactureFile);
