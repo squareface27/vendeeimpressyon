@@ -314,6 +314,8 @@ class ApiController extends AbstractController
     $annee = $date->format('Y');
     $mois = $date->format('m');
 
+    $objetMail = 'Votre commande est prête';
+    $message = 'Cher client, Chère cliente, Nous sommes ravis de vous informer que votre commande est prête à être récupérée. Cordialement,';
 
 
     $rawData = $request->getContent();
@@ -548,7 +550,7 @@ $htmlBonDeCommande .= '</ul>
 
 
     $emailClient = (new Email())
-        ->from('vendee.impressyon@gmail.com')
+        ->from('etudiant.impressyon@gmail.com')
         ->to($email)
         ->subject('Facture Vendée Impress\'Yon')
         ->text('Merci de trouver en pièce jointe la facture de votre achat.')
@@ -558,7 +560,8 @@ $htmlBonDeCommande .= '</ul>
         ->from('vendee.impressyon@gmail.com')
         ->to('etudiant.impressyon@gmail.com')
         ->subject('Nouvelle Commande de ' . $pseudo)
-        ->html('<a href="http://localhost/vendeeimpressyon/backend-symfony/public/pdf/'.$pdfName.'">Lien d\'accès au PDF</a>')
+        ->html('<a href="http://localhost/vendeeimpressyon/backend-symfony/public/pdf/'.$pdfName.'">Lien d\'accès au PDF</a>' . 
+           '<br><a href="mailto:' . rawurlencode($email) . '?subject=' . rawurlencode($objetMail) . '&body=' . rawurlencode($message) . '">Prévenir le client que sa commande est prête</a>')
         ->attachFromPath($numeroCommandeFile)
         ->attachFromPath($numeroFactureFile);
 
