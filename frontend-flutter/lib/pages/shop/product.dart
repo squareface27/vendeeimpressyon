@@ -284,21 +284,24 @@ class _ProductPageState extends State<ProductPage> {
   }
 
   Widget radioPapierCouverture() {
-    couvertureName = "Papier blanc";
+    couverturePrice = 8.0;
+    if (isCouverturePapierIvoire) {
+      couvertureName = "Papier Ivoire";
+    } else {
+      couvertureName = "Papier blanc";
+    }
     return Padding(
       padding: const EdgeInsets.only(left: 4.0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("Papier blanc (défaut)"),
+          const Text("Papier blanc (défaut)"),
           Radio(
             value: false,
             groupValue: isCouverturePapierIvoire,
             onChanged: (value) {
               setState(() {
                 isCouverturePapierIvoire = false;
-                String couvertureName = "Papier blanc";
-                print(couvertureName);
               });
             },
           ),
@@ -309,8 +312,6 @@ class _ProductPageState extends State<ProductPage> {
             onChanged: (value) {
               setState(() {
                 isCouverturePapierIvoire = true;
-                String couvertureName = "Papier Ivoire";
-                print(couvertureName);
               });
             },
           ),

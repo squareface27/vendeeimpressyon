@@ -269,7 +269,7 @@ class _ResumePageState extends State<ResumePage> {
                       ),
                       const SizedBox(height: 16),
                       Text(
-                        "Nombre de Pages : ${widget.numberOfPages} pages",
+                        "Nombre de Pages : ${widget.numberOfPages} pages ${(widget.unitPrice * widget.numberOfPages).toStringAsFixed(2)}€",
                       ),
                       Text(
                         "Recto/Verso : ${widget.isRectoVerso ? 'Oui' : 'Non'}",
@@ -284,10 +284,13 @@ class _ResumePageState extends State<ResumePage> {
                         "Type de Finition : ${widget.finitionPrice}€",
                       ),
                       Text(
-                        "Type de Couverture : ${widget.couvertureName} ${widget.couverturePrice}€",
+                        "Type de Couverture : ${widget.couvertureName}",
                       ),
                       Text(
-                        "Couleur de Couverture : ${widget.couleurCouverturePrice}€",
+                        "Couverture : ${widget.couverturePrice}€",
+                      ),
+                      Text(
+                        "Couleur de Couverture : ${widget.couleurCouvertureName} ${widget.couleurCouverturePrice}€",
                       ),
                       Text(
                         "Nombre d'exemplaires : ${widget.numberOfCopies}",
