@@ -45,3 +45,4 @@ flutter:
     - .env
     - lib/assets/images/logo.png
     - lib/assets/images/vacance.png
+    - lib/assets/images/mockup_reliure.png

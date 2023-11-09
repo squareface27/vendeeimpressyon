@@ -59,6 +59,9 @@ class _ProductPageState extends State<ProductPage> {
   bool isNumberOfCopiesValid = true;
   bool isNumberOfPagesValid = true;
 
+  int numberOfCopies = 1;
+  int numberOfPages = 0;
+
   final apiUrl = dotenv.env['API_URL_GET_PRODUCTOPTIONS']!;
 
   @override
@@ -114,7 +117,13 @@ class _ProductPageState extends State<ProductPage> {
   TextEditingController numberOfCopiesController = TextEditingController();
 
   double totalPrice = 0.0;
+  double totalPriceOption = 0.0;
   double reliurePrice = 0.0;
+  double reliurePriceTotal = 0.0;
+  double premierepagePriceTotal = 0.0;
+  double finitionPriceTotal = 0.0;
+  double couleurCouverturePriceTotal = 0.0;
+  double couverturePriceTotal = 0.0;
   double premierepagePrice = 0.0;
   double finitionPrice = 0.0;
   double couleurCouverturePrice = 0.0;
@@ -125,8 +134,6 @@ class _ProductPageState extends State<ProductPage> {
   String finitionName = "";
   String couvertureName = "";
 
-  double couvertureCouleurPrice = 9.0;
-  double couvertureNoirEtBlancPrice = 7.0;
   double couverturePrice = 0.0;
 
   Future<void> pickAndProcessPdf() async {
@@ -283,6 +290,49 @@ class _ProductPageState extends State<ProductPage> {
     }
   }
 
+  Widget buildDropdownCouleurCouverture() {
+    final filteredOptions = productoptions
+        .where((option) =>
+            option.categorieoptionname == "CouleurCouverture" &&
+            option.categorieid == widget.categorieid)
+        .toList();
+
+    if (filteredOptions.isNotEmpty) {
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 4.0),
+            child: DropdownButton<String>(
+              value: selectedCouleurCouvertureOption ??
+                  "Sélectionner une couleur de couverture",
+              onChanged: (newOption) {
+                setState(() {
+                  selectedCouleurCouvertureOption = newOption;
+                  final selectedProductOption = filteredOptions.firstWhere(
+                    (option) => option.name == newOption,
+                    orElse: () => ProductOptions("", 0.0, "", ""),
+                  );
+
+                  couleurCouvertureName = selectedProductOption.name;
+                  couleurCouverturePrice = selectedProductOption.prix;
+                });
+              },
+              items: filteredOptions
+                  .map((option) => DropdownMenuItem<String>(
+                        value: option.name,
+                        child: Text(option.name),
+                      ))
+                  .toList(),
+            ),
+          ),
+        ],
+      );
+    } else {
+      return const SizedBox.shrink();
+    }
+  }
+
   Widget radioPapierCouverture() {
     couverturePrice = 8.0;
     if (isCouverturePapierIvoire) {
@@ -320,6 +370,27 @@ class _ProductPageState extends State<ProductPage> {
     );
   }
 
+  void updateOptionPrices() {
+    reliurePrice;
+    premierepagePrice;
+    finitionPrice;
+    couleurCouverturePrice;
+
+    // Mise à jour du prix de la reliure en fonction du nombre d'exemplaires
+    reliurePriceTotal = reliurePrice * numberOfCopies;
+    premierepagePriceTotal = premierepagePrice * numberOfCopies;
+    finitionPriceTotal = finitionPrice * numberOfCopies;
+    couleurCouverturePriceTotal = couleurCouverturePrice * numberOfCopies;
+
+    // Recalcul du prix total en fonction des options mises à jour
+    totalPriceOption = (reliurePriceTotal +
+        premierepagePriceTotal +
+        finitionPriceTotal +
+        couleurCouverturePriceTotal);
+
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -333,11 +404,13 @@ class _ProductPageState extends State<ProductPage> {
             children: <Widget>[
               Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: Image.network(
-                  widget.image,
-                  fit: BoxFit.cover,
-                  height: 160.0,
-                ),
+                child: widget.categorieid == "Cours"
+                    ? Image.asset('lib/assets/images/mockup_reliure.png')
+                    : Image.network(
+                        widget.image,
+                        fit: BoxFit.cover,
+                        height: 160.0,
+                      ),
               ),
               Center(
                 child: Column(
@@ -471,6 +544,10 @@ class _ProductPageState extends State<ProductPage> {
                 ),
               ),
               if (productoptions
+                  .any((option) => option.categorieoptionname == "Reliure"))
+                buildDropdownReliure(),
+              buildDropdownCouleurCouverture(),
+              if (productoptions
                   .any((option) => option.categorieoptionname == "1erePage"))
                 buildDropdownPremierePage(),
               if (productoptions
@@ -511,7 +588,8 @@ class _ProductPageState extends State<ProductPage> {
                               int numberOfPages =
                                   int.tryParse(numberOfPagesController.text) ??
                                       0;
-                              int numberOfCopies = int.tryParse(value) ?? 0;
+                              numberOfCopies = int.tryParse(value) ?? 1;
+                              updateOptionPrices();
                               double unitPrice = widget.prix;
                               if (numberOfCopies < 1) {
                                 isNumberOfCopiesValid = false;
@@ -538,7 +616,9 @@ class _ProductPageState extends State<ProductPage> {
                   style: TextStyle(fontSize: 16, color: Colors.red),
                 ),
               Text(
-                "Prix total = ${(totalPrice + reliurePrice + premierepagePrice + finitionPrice + couverturePrice).toStringAsFixed(2)}€",
+                widget.categorieid == "Thèses & Mémoires"
+                    ? "Prix total = ${(totalPrice + totalPriceOption + couverturePrice).toStringAsFixed(2)}€"
+                    : "Prix total = ${(totalPrice + totalPriceOption).toStringAsFixed(2)}€",
                 style: const TextStyle(fontSize: 16),
               ),
               ElevatedButton(
